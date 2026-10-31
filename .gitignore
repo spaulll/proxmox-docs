@@ -1,0 +1,10 @@
+# Temporary / secret exclusions
+.env
+.pi/
+.local/
+*.swp
+*.tmp
+.next-plan.md
+.plan-next.md
+plan-next.md
+NEXT_PLAN.md
