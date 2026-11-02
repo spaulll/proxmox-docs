@@ -7,42 +7,28 @@
 | Address | `192.168.0.169` |
 | User | `pi` |
 | MAC | `e4:5f:01:30:e6:f6` |
-| Authentication | password login; the password is not stored in this repo |
+| Authentication | password login; password not stored here |
 | OS | Debian 13 (trixie), kernel `6.12.75+rpt-rpi-v8`, `aarch64` |
 | Uptime | ~13 days |
 | Memory | 7.6 GB total, 888 MB used, 612 MB buffers, 6.8 GB available |
 | Disk (root) | 29 GB total, 4.7 GB used (18 %), `mmcblk0p2` |
-| Role | AdGuard Home replica (MASTER? no — BACKUP), keepalived BACKUP, UPS monitor, Tailscale node |
+| Role | AdGuard Home replica (BACKUP), keepalived BACKUP, UPS monitor, Tailscale node |
 
-The Pi has been running continuously since 2026-10-18 (13 days at capture). It is not just a standby; it
-is the active control plane for the UPS monitor and a Tailscale node. I logged in with the provided
-password only for inspection; the value is not kept in any file here.
+The Pi has run continuously since 2026-10-18 (13 days at capture). It's not just a standby — it's the active control plane for the UPS monitor and a Tailscale node. Logged in with the provided password only for inspection; the value isn't kept in any file here.
 
 ## DNS (live)
 
-`AdGuardHome.service` is active (`PID 1166`, started 2026-10-18). The binary in `/opt/AdGuardHome/` is
-34 MB (`v` reported by file timestamp Aug 25; the version isn't shown in `systemctl status`, but the
-`AdGuardHome.yaml` file is 12 KB, created Oct 18). The service has been up continuously since Oct 18
-and processes filtering updates regularly (log shows filter updates on Oct 30, 31).
+`AdGuardHome.service` is active (`PID 1166`, started 2026-10-18). Binary in `/opt/AdGuardHome/` is 34 MB (file timestamp Aug 25; version not shown in `systemctl status`, but `AdGuardHome.yaml` is 12 KB, created Oct 18). Up continuously since Oct 18, processes filtering updates regularly (log shows updates Oct 30, 31).
 
-The sync from CT 107 (`adguardhome-sync`) keeps the AdGuard config aligned. The Pi holds the `.147`
-VIP as `BACKUP` (priority 50) via `keepalived.service` (`PID 1168`). The `keepalived` config is in
-`/etc/keepalived/keepalived.conf`; it defines the `VI_1` instance on `eth0`, with `unicast_peer` `.146`
-(CT 107) and `priority 50`. The authentication passphrase (`auth_pass`) is configured but its value is
-not copied into these notes.
+Sync from CT 107 (`adguardhome-sync`) keeps the config aligned. The Pi holds the `.147` VIP as `BACKUP` (priority 50) via `keepalived.service` (`PID 1168`). Config in `/etc/keepalived/keepalived.conf`: `VI_1` instance on `eth0`, `unicast_peer` `.146` (CT 107), `priority 50`. Auth passphrase (`auth_pass`) configured; value not copied.
 
-`dns-redirect.service` is also active. I have not inspected its purpose; it may redirect local queries.
-`extender-uptime.service` runs too; its purpose is unclear from the name.
+`dns-redirect.service` is active. Purpose not inspected; may redirect local queries. `extender-uptime.service` runs too; unclear from the name.
 
-The TLS certificate for the `dns.prox.dpdns.org` domain is still an open question. The sync job does not
-sync TLS, and I did not find a `dns.prox.dpdns.org` certificate file on the Pi. The domain may be served
-by the Pi's own certificate or by the host; either way it is not visible in the inspected directory.
+TLS cert for `dns.prox.dpdns.org` is still open. The sync job doesn't sync TLS, and I found no `dns.prox.dpdns.org` cert file on the Pi. The domain may be served by the Pi's own cert or the host's; either way not visible in the inspected dir.
 
 ## UPS monitor (live)
 
-`ups-monitor.service` (`PID 1170`, started Oct 18) runs `/usr/local/bin/ups-monitor.py`. It has been
-running continuously for the same 13 days. The service description says it is the Pi brain
-(`reconciler`, Telegram, webhook, ntfy).
+`ups-monitor.service` (`PID 1170`, started Oct 18) runs `/usr/local/bin/ups-monitor.py`. Up the same 13 days. Service description: Pi brain (`reconciler`, Telegram, webhook, ntfy).
 
 State files in `/var/lib/ups-monitor/` at capture:
 
@@ -54,52 +40,38 @@ State files in `/var/lib/ups-monitor/` at capture:
 - `outage.json` (51 bytes)
 - `tg-offset.json` (21 bytes)
 
-These files confirm the service is tracking events and maintaining the sequence ledger. I have not
-modified any of them or started/stopped the service.
+Confirms the service tracks events and maintains the sequence ledger. Nothing modified, nothing started/stopped.
 
-The log (`/var/log/ups-monitor.log`) shows two kinds of warnings:
+Log (`/var/log/ups-monitor.log`) shows two kinds of warnings:
 
-- Telegram poll errors (`Connection reset by peer`, `HTTP Error 502: Bad Gateway`, `read operation timed out`) — the Telegram connection is not fully reliable, but `ntfy.service` provides the fallback.
-- ESP32 state/event poll timeouts (`esp /state poll failed`, `esp /events poll failed`) — the Pi sometimes
-  loses contact with `.178`, but the event ledger catches up when it reconnects.
+- Telegram poll errors (`Connection reset by peer`, `HTTP Error 502: Bad Gateway`, `read operation timed out`) — Telegram isn't fully reliable; `ntfy.service` is the fallback.
+- ESP32 state/event poll timeouts (`esp /state poll failed`, `esp /events poll failed`) — sometimes loses contact with `.178`; the event ledger catches up on reconnect.
 
-I have not changed the service or edited any of its files. The live ESP32 (`.178`) reports `V7.6`, and the
-service reconciles its events. The Pi is not the authority for mains state; the ESP32 is.
+Service not changed, no files edited. Live ESP32 (`.178`) reports `V7.6`; the service reconciles its events. The Pi isn't the authority for mains state — the ESP32 is.
 
 ## Tailscale (live)
 
-`tailscaled.service` (`PID 1069`) is active since Oct 18. The `tailscale0` interface (`mtu 1280`) has the
-IP `100.113.193.23` (scope global) and a link-local `fe80::` address. The Tailscale status (`tailscale`
-not installed locally on Pi but `tailscaled` reports through its socket) says:
+`tailscaled.service` (`PID 1069`) active since Oct 18. `tailscale0` (`mtu 1280`) has `100.113.193.23` (global) and a link-local `fe80::`. Status (`tailscale` not installed locally; `tailscaled` reports through its socket):
 
 - `Status: "Connected; djspaul99@gmail.com; 100.113.193.23 fd7a:115c:a1e0::2536:c118"`
 - Main PID is the daemon.
-- Log shows `derp.Recv` failures (`connect: network is unreachable` to `derp-6` at IPv6 `2400:6180`), which
-  is expected because there is no IPv6 default route.
+- Log shows `derp.Recv` failures (`connect: network is unreachable` to `derp-6` at IPv6 `2400:6180`) — expected, no IPv6 default route.
 
-Tailscale is a running service on the Pi. Whether it acts as an exit node or advertises routes is not
-confirmed; the log shows connection attempts but no exit-node status.
+Running service. Whether it's an exit node or advertises routes isn't confirmed; the log shows connection attempts but no exit-node status.
 
 ## Network and interfaces
 
-`eth0` (`vmbr0` on the host) has `192.168.0.169/24` (dynamic DHCP lease from the ISP router). The lease
-lifetime is about 12 hours (82379 sec at capture). `tailscale0` (`pointopoint`) has `100.113.193.23`.
-`lo` has `127.0.1.1` assigned by cloud-config (`manage_etc_hosts` true).
+`eth0` (`vmbr0` on the host) has `192.168.0.169/24` (dynamic DHCP from the ISP router). Lease ~12 h (82379 s at capture). `tailscale0` (`pointopoint`) has `100.113.193.23`. `lo` has `127.0.1.1` from cloud-config (`manage_etc_hosts` true).
 
-`/etc/resolv.conf` is generated by `resolvconf`, with a comment saying it will be overwritten. The actual
-nameserver isn't shown in the captured output (the file content ends at the header comment), which suggests
-the dynamic file hasn't been fully written or the content is truncated. The host uses `.147` (AdGuard VIP);
-OpenWrt (`10.10.10.1`) forwards `.147` to AdGuard. The Pi uses the VIP for its own queries, confirming
-it participates in the same DNS design.
+`/etc/resolv.conf` is generated by `resolvconf`, with a comment saying it'll be overwritten. Actual nameserver isn't in the captured output (file content ends at the header), suggesting the dynamic file isn't fully written or the content is truncated. The host uses `.147` (AdGuard VIP); OpenWrt (`10.10.10.1`) forwards `.147` to AdGuard. The Pi uses the VIP for its own queries, confirming it's in the same DNS design.
 
-`/etc/hosts` includes `pi` mapped to `127.0.1.1` (`pi pi`), which is standard Debian behavior.
+`/etc/hosts` maps `pi` to `127.0.1.1` — standard Debian.
 
-`dns-redirect.service` is active (no further details). `extender-uptime.service` is active too. I have not
-investigated their exact roles.
+`dns-redirect.service` active (no details). `extender-uptime.service` active too. Exact roles not investigated.
 
 ## What else is installed
 
-The Pi runs Debian 13 packages. Notable active services from `systemctl`:
+Debian 13 packages. Notable active services from `systemctl`:
 
 - `avahi-daemon.service` (mDNS)
 - `bluetooth.service`
@@ -108,33 +80,24 @@ The Pi runs Debian 13 packages. Notable active services from `systemctl`:
 - `wpa_supplicant.service`
 - `user@1000.service`
 
-I have not inspected all their configurations. I did not install or remove any package.
+Configs not all inspected. Nothing installed or removed.
 
-The `postfix.service` is not active; no local mail agent is running. `cron.service` is active but no
-scheduled tasks were visible in `crontab -l` or `/etc/cron.*` files.
+`postfix.service` not active; no local mail agent. `cron.service` active but no scheduled tasks in `crontab -l` or `/etc/cron.*`.
 
-`systemd-timesyncd.service` is active, providing time sync.
+`systemd-timesyncd.service` active — time sync.
 
-No firewall rules (`nft`, `ufw`) were visible inside the Pi; the Pi relies on the network design (OpenWrt,
-keepalived, AdGuard) rather than local packet filtering.
+No firewall rules (`nft`, `ufw`) inside; the Pi relies on the network design (OpenWrt, keepalived, AdGuard), not local filtering.
 
 ## Security and secrets
 
-- The `auth_pass` for `keepalived` (`/etc/keepalived/keepalived.conf`) is configured but its value is not
-  reproduced here.
-- `AdGuardHome.yaml` contains an admin account with a `password_hash` and other settings; I have not copied
-  those values.
-- `dns.prox.dpdns.org` certificate: I did not confirm whether the Pi holds its own TLS certificate or relies
-  on the host's certificate. The `dns-redirect.service` and `/etc/hosts` don't clarify this.
-- `.env` from the UPS repo is missing; the Pi's `ups-monitor.service` has the injected values embedded.
-- No `ssh` key auth is configured (`ssh.service` allows password login only; `id_ed25519.pub` exists on the
-  host, not on the Pi).
-- The `PIPASS` (password for SSH access) is not stored in any file in this workspace after inspection; I
-  have removed temporary files containing it.
+- `auth_pass` for `keepalived` (`/etc/keepalived/keepalived.conf`) configured; value not reproduced.
+- `AdGuardHome.yaml` has an admin account with `password_hash` and other settings; not copied.
+- `dns.prox.dpdns.org` cert: not confirmed whether the Pi holds its own or relies on the host's. `dns-redirect.service` and `/etc/hosts` don't clarify.
+- `.env` from the UPS repo is missing; `ups-monitor.service` has the injected values embedded.
+- No SSH key auth (`ssh.service` allows password only; `id_ed25519.pub` exists on the host, not the Pi).
+- `PIPASS` is not stored in any file here after inspection; temp files containing it were removed.
 
-No remote services were started, stopped, restarted, or edited. All observations came from `systemctl`,
-`cat`, `ls`, `free`, `df`, `ps`, `ss`, `grep`, `uname`, `uptime` and read-only inspection of config
-files.
+No remote services started, stopped, or edited. All observations from `systemctl`, `cat`, `ls`, `free`, `df`, `ps`, `ss`, `grep`, `uname`, `uptime`, read-only config inspection.
 
 ## Live state at inspection (2026-10-31)
 
@@ -153,21 +116,21 @@ files.
 - `avahi-daemon.service`: active
 - `postfix.service`: not active
 - `cron.service`: active
-- Network: `eth0` (`192.168.0.169/24`, dynamic lease `~12h`), `tailscale0` (`100.113.193.23`)
+- Network: `eth0` (`192.168.0.169/24`, dynamic `~12h`), `tailscale0` (`100.113.193.23`)
 - Log noise: `odhcpd` (not applicable here); UPS monitor shows Telegram/network errors (read-only, no fix applied)
 
 ## Change log
 
 | Date | Change |
 |---|---|
-| 2026-10-31 | First version. Confirmed Pi roles from CT 107 and repo; live inspection completed; `AdGuardHome` running continuously; `keepalived` BACKUP; `ups-monitor` running; `tailscale` connected; `dns-redirect` and `extender-uptime` active. No secrets included. |
+| 2026-10-31 | First version. Confirmed roles from CT 107 and repo; live inspection; `AdGuardHome` running; `keepalived` BACKUP; `ups-monitor` running; `tailscale` connected; `dns-redirect` and `extender-uptime` active. No secrets. |
 
 ## What still needs checking
 
-- `dns.prox.dpdns.org` TLS certificate: is it on the Pi (`/etc/ssl`, `/etc/letsencrypt/`) or handled by the host?
-- `dns-redirect.service` purpose: redirect to which service?
+- `dns.prox.dpdns.org` TLS cert: on the Pi (`/etc/ssl`, `/etc/letsencrypt/`) or handled by the host?
+- `dns-redirect.service` purpose: redirect to what?
 - `extender-uptime.service` purpose.
-- The Pi's backup: it is not in the Proxmox weekly job; its SD card (`mmcblk0`) has no separate backup.
-- Whether `tailscaled.service` acts as an exit node or just connects to the Tailscale network.
-- Whether `postfix.service` should be enabled (it is not currently active).
-- Whether any package updates are pending on the Pi (`apt` status not checked).
+- The Pi's backup: not in the Proxmox weekly job; SD card (`mmcblk0`) has no separate backup.
+- Whether `tailscaled.service` is an exit node or just connects.
+- Whether `postfix.service` should be enabled (currently inactive).
+- Whether any package updates are pending (apt status not checked).

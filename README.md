@@ -1,65 +1,59 @@
 # Homelab notes
 
-This is the documentation for my home setup: one Proxmox host (`prox`), the containers running on it,
-and a Raspberry Pi. I wrote it by logging into each machine and reading the actual configuration, not
-from memory or from an old diagram.
+Working notes for the home setup. One Proxmox host (`prox`), the containers on it, and a Raspberry Pi.
 
-A few ground rules for this repo:
+What's documented comes from logging into each box and reading the config. Not from memory or an old diagram.
 
-- No passwords, API keys, token values, private keys or other secrets. If a credential matters, the docs
-  say where it lives, never what it is.
-- Everything here was collected read-only. I did not change a service, a config file or a container to
-  produce these notes.
-- The setup is a trusted single-user LAN. Security is intentionally kept simple, so the notes record how
-  things are rather than prescribing a hardening project.
+No passwords or private keys live here. If a credential matters, the notes say *where* it lives, never what it is. Everything was collected read-only. Security is kept simple on purpose — this is a single-user LAN.
 
 Last full review: 2026-10-31.
 
-## What is in here
+## What's in here
 
-| Document | What it is for |
+| Document | What it's for |
 |---|---|
-| [proxmox/prox-host.md](proxmox/prox-host.md) | The Proxmox host itself: hardware, disks, network, services and the commands I use most |
-| [proxmox/guest-inventory.md](proxmox/guest-inventory.md) | Quick reference for all 16 containers, including addresses and mounts |
-| [network/network-overview.md](network/network-overview.md) | How the LAN and the internal lab network fit together |
-| [operations/backups.md](operations/backups.md) | What gets backed up, what does not, and how to restore it |
-| [operations/risks-and-questions.md](operations/risks-and-questions.md) | Loose ends, accepted trade-offs and things I still need to confirm |
-| [containers/README.md](containers/README.md) | Plan and checklist for the per-container pages |
-| [containers/107-adguard.md](containers/107-adguard.md) | AdGuard Home, the DNS VIP and the Pi replica |
-| [containers/106-openwrt.md](containers/106-openwrt.md) | The lab router, DHCP/DNS and the firewall that does not load |
-| [containers/101-npm.md](containers/101-npm.md) | Nginx Proxy Manager, its proxy hosts and SSL management |
-| [pi/README.md](pi/README.md) | The Raspberry Pi, its DNS and UPS roles, and what still needs checking |
-| [services/ups.md](services/ups.md) | The ESP32/Pi UPS monitor and the shutdown/wake path |
-| [services/README.md](services/README.md) | Cross-cutting service docs; the UPS page is done, the rest are planned |
+| [proxmox/prox-host.md](proxmox/prox-host.md) | The host itself: hardware, disks, network, services, commands I use |
+| [proxmox/guest-inventory.md](proxmox/guest-inventory.md) | Quick reference for all 16 containers, addresses, mounts |
+| [network/network-overview.md](network/network-overview.md) | How the LAN and internal lab fit together |
+| [operations/backups.md](operations/backups.md) | What's backed up, what isn't, how to restore |
+| [operations/risks-and-questions.md](operations/risks-and-questions.md) | Loose ends, trade-offs, open questions |
+| [containers/README.md](containers/README.md) | Plan and checklist for per-container pages |
+| [containers/107-adguard.md](containers/107-adguard.md) | AdGuard Home, the DNS VIP, the Pi replica |
+| [containers/106-openwrt.md](containers/106-openwrt.md) | The lab router, DHCP/DNS, the firewall that won't load |
+| [containers/101-npm.md](containers/101-npm.md) | Nginx Proxy Manager, proxy hosts and SSL |
+| [pi/README.md](pi/README.md) | The Raspberry Pi, its DNS and UPS roles, what's un-checked |
+| [services/ups.md](services/ups.md) | The ESP32/Pi UPS monitor, shutdown/wake path |
+| [services/README.md](services/README.md) | Cross-cutting service docs; UPS done, rest planned |
 
-## The setup in one paragraph
+## The host
 
-The Proxmox host is a small Lenovo ThinkCentre with an i5-6500T, 16 GB of RAM and two disks. The boot
-disk holds Proxmox and all container root filesystems. The second disk is a USB-attached 480 GB drive
-mounted at `/mnt/data`, which holds media, photos and backup staging. Proxmox runs 16 LXC containers and
-no virtual machines. Thirteen are normally running. The containers live on an internal `10.10.10.0/24`
-network behind an OpenWrt container, while the host, the NAS, AdGuard and Tailscale sit on the main
-`192.168.0.0/24` LAN. DNS is handled by AdGuard on the host LAN, with a second AdGuard on the Pi behind a
-keepalived VIP. There is no Proxmox cluster or HA, and no Proxmox Backup Server; a weekly script sends
-seven containers to Backblaze B2.
+Lenovo ThinkCentre M900 (type `10FM0022US`).
+
+- CPU: Intel Core i5-6500T — 4 cores, 4 threads, 2.5 GHz base / 3.1 GHz turbo
+- RAM: 16 GB — two 8 GB DDR4-2133, non-ECC
+- NIC: `eno1`, gigabit. Wi-Fi card present but unused
+- BIOS `FWKT5FA` (2016). Secure Boot off, no TPM 2.0
+
+Disks:
+
+- `/dev/sda` — Crucial CT240BX500SSD1, 223.6 GB. Boot, LVM, all container root filesystems
+- `/dev/sdb` — Matrix 512GB, 476.9 GB. `/mnt/data`, USB-attached via JMicron bridge
+- `/dev/zram0` — 3.9 GB compressed swap
+
+Runs **16 LXC containers**, no VMs. Thirteen run by default. No cluster, no HA, no Proxmox Backup Server. A weekly script ships seven containers to Backblaze B2.
+
+## Network
+
+Two networks. The house LAN, `192.168.0.0/24`, carries the host, NAS, AdGuard, Pi, and Tailscale. A private lab, `10.10.10.0/24`, runs behind an OpenWrt container (CT 106). The containers live there.
+
+DNS is AdGuard on the host LAN, with a second AdGuard on the Pi behind a keepalived VIP (`192.168.0.147`). Full layout in [network/network-overview.md](network/network-overview.md).
 
 ## The Pi
 
-The Pi is at `192.168.0.169` and the login user is `pi`. Credentials are deliberately not kept in this
-repo. CT 107 showed that the Pi runs the second AdGuard Home instance and is the keepalived backup for
-the DNS VIP. It also runs the UPS monitor, which reads the ESP32 at `192.168.0.178` and can shut down or
-wake `prox` when mains power or the WAN goes away. The design is in [services/ups.md](services/ups.md).
-I have not inspected the Pi directly yet; that comes after the containers.
+At `192.168.0.169`, user `pi`. Runs the second AdGuard instance and is the keepalived backup for the DNS VIP. Also runs the UPS monitor, which reads the ESP32 at `192.168.0.178` and can shut down or wake `prox` when mains or the WAN drops. Design: [services/ups.md](services/ups.md). Not inspected directly yet — that comes after the containers.
 
-## How these pages were made
+## What's next
 
-I used SSH to reach `prox` and read `/etc/pve`, `/etc/network/interfaces`, storage and container configs,
-systemd units, SMART data, package state and logs. For the network details I also looked at the OpenWrt
-container's DHCP leases and DNS settings. No configuration was written, no service was restarted and no
-container was started or stopped.
-
-## What comes next
-
-1. One page per container. CT 107 (AdGuard) and CT 106 (OpenWrt) are done; CT 101 (NPM) is next.
-2. The Pi, now that CT 107 has confirmed its role in DNS and the UPS repo has explained the other role.
-3. Cross-cutting pages for DNS, the reverse proxy, media, photos, monitoring and remote access.
+1. One page per container. CT 107 and CT 106 are done; CT 101 (NPM) is next.
+2. The Pi, once CT 107 confirms its DNS role and the UPS repo explains the other one.
+3. Cross-cutting pages: DNS, reverse proxy, media, photos, monitoring, remote access.

@@ -1,12 +1,8 @@
 # prox, the Proxmox host
 
-`prox` is the main machine in the homelab. It is a standalone Proxmox VE node: no Proxmox cluster, no
-Proxmox HA, no shared storage. Everything else, apart from the Pi, runs on it as an LXC container. The
-one bit of failover in the setup is the DNS VIP shared with the Pi, and that is handled by keepalived on
-CT 107 and the Pi, not by Proxmox.
+`prox` is the main machine. Standalone Proxmox VE node. No cluster, no HA, no shared storage. Everything except the Pi runs on it as an LXC container. The only failover is the DNS VIP shared with the Pi, handled by keepalived on CT 107 and the Pi — not by Proxmox.
 
-I checked the host over SSH on 2026-10-31. It had been up for about four days at that point. This page
-describes what is actually installed and configured, not what was planned.
+Checked over SSH on 2026-10-31. Up about four days at that point. This page records what's actually installed and configured, not what was planned.
 
 ## Identity and access
 
@@ -20,55 +16,45 @@ describes what is actually installed and configured, not what was planned.
 | Proxmox | `proxmox-ve 9.2.0`, `pve-manager 9.2.21` |
 | Kernel | `7.0.14-20-pve` |
 | Time | `Asia/Kolkata`, NTP via chrony |
-| Subscription | none, using the `pve-no-subscription` repo |
+| Subscription | none, `pve-no-subscription` repo |
 
-The web UI uses the default self-signed certificate (`CN=prox.lan`), issued by the local PVE CA and valid
-until 2035. There is no ACME setup.
+Web UI uses the default self-signed cert (`CN=prox.lan`) from the local PVE CA, valid until 2035. No ACME.
 
-Only one Proxmox user exists, `root@pam`. A few API tokens are in use for small devices and a dashboard,
-but token values are not recorded here. SSH accepts both keys and passwords for root.
+One user, `root@pam`. A few API tokens exist for small devices and a dashboard; token values aren't recorded here. SSH accepts keys and passwords for root.
 
-The node has Wake-on-LAN configured with MAC `00:23:24:c7:1f:5d`, and the NIC has WoL enabled. I have
-used that before to bring the machine back after a power cut.
+Wake-on-LAN is configured (MAC `00:23:24:c7:1f:5d`). Used before to bring the box back after a power cut.
 
 ## Hardware
 
-It is a Lenovo ThinkCentre M900, machine type `10FM0022US`, serial `MJ04QE4U`. Small desktop, one NIC,
-one Wi-Fi card that is not used.
+Lenovo ThinkCentre M900, type `10FM0022US`, serial `MJ04QE4U`. Small desktop, one NIC, one unused Wi-Fi card.
 
-- CPU: Intel Core i5-6500T, 4 cores and 4 threads, 2.5 GHz base, 3.1 GHz turbo.
-- RAM: 16 GB, two 8 GB DDR4-2133 sticks, non-ECC.
-- NIC: `eno1`, gigabit, link up.
-- Wi-Fi: `wlp1s0`, present but left unconfigured.
-- BIOS: `FWKT5FA` from 2016. Secure Boot is off and there is no TPM 2.0 support.
+- CPU: Intel Core i5-6500T, 4 cores / 4 threads, 2.5 GHz base, 3.1 GHz turbo
+- RAM: 16 GB, two 8 GB DDR4-2133, non-ECC
+- NIC: `eno1`, gigabit, link up
+- Wi-Fi: `wlp1s0`, present, unconfigured
+- BIOS: `FWKT5FA` (2016). Secure Boot off, no TPM 2.0
 
 ### Disks
 
-| Device | Model | Size | What it is used for |
-|---|---|---|---|
+| Device | Model | Size | Used for |
+|---|---|---|
 | `/dev/sda` | Crucial CT240BX500SSD1 | 223.6 GB | Proxmox boot, LVM, all container root filesystems |
-| `/dev/sdb` | Matrix 512GB | 476.9 GB | `/mnt/data`, connected over USB through a JMicron bridge |
-| `/dev/zram0` | zram | 3.9 GB | Compressed swap |
+| `/dev/sdb` | Matrix 512GB | 476.9 GB | `/mnt/data`, USB via JMicron bridge |
+| `/dev/zram0` | zram | 3.9 GB | compressed swap |
 
-`/dev/sda` is a SATA SSD. SMART is clean: 14,949 power-on hours, 51 °C, no reallocated or pending sectors.
+`/dev/sda` is SATA SSD. SMART clean: 14,949 hours, 51 °C, no reallocated or pending sectors.
 
-`/dev/sdb` is the important one to watch. It reports 16,881 hours, 40 °C and an overall PASSED status, but
-it also has **3 current pending sectors**. `smartd` has been logging that every 30 minutes. The count has
-not moved while I have been looking, but pending sectors are worth taking seriously, especially on a
-single USB-attached disk with no mirror.
+`/dev/sdb` is the one to watch. 16,881 hours, 40 °C, overall PASSED — but **3 current pending sectors**. `smartd` logs them every 30 minutes. The count hasn't moved, but pending sectors matter on a single USB disk with no mirror.
 
-`lsblk` reports `ROTA=1` for `sdb`, although the SMART attributes (wear levelling and reallocated sector
-counters) look like flash media. The USB bridge is probably reporting the wrong rotational flag.
+`lsblk` says `ROTA=1` for `sdb`, though the SMART attributes look like flash. The USB bridge is probably reporting the wrong rotational flag.
 
-Temperatures at capture: CPU package 54 °C, cores 51–53 °C, `sda` 51 °C, `sdb` 40 °C. Nothing alarming.
+Temps at capture: CPU 54 °C, cores 51–53, `sda` 51, `sdb` 40. Nothing alarming.
 
-There is no UPS daemon installed on the host (no NUT or apcupsd) and no USB UPS was visible. The UPS is
-handled outside Proxmox by the ESP32/Pi monitor described in [../services/ups.md](../services/ups.md).
-The host only runs the small shutdown receiver that the ESP32 calls.
+No UPS daemon on the host (no NUT, no apcupsd), and no USB UPS visible. The UPS is handled outside Proxmox by the ESP32/Pi monitor ([../services/ups.md](../services/ups.md)). The host only runs the small shutdown receiver the ESP32 calls.
 
 ## Storage
 
-Proxmox has two storage entries:
+Two storage entries:
 
 ```text
 dir: local
@@ -81,29 +67,23 @@ lvmthin: local-lvm
         content rootdir,images
 ```
 
-`local` is a directory on the root filesystem for ISOs, LXC templates and dumps. `local-lvm` is the thin
-pool where container root filesystems live. There is no ZFS, Ceph, NFS, SMB or PBS storage configured.
+`local` is a directory on root for ISOs, templates, dumps. `local-lvm` is the thin pool for container root filesystems. No ZFS, Ceph, NFS, SMB, or PBS.
 
-The boot SSD is split like this:
+Boot SSD layout:
 
 ```text
 sda 223.6G
 ├─sda1   1007K  BIOS boot
 ├─sda2      1G  /boot/efi
-└─sda3  222.6G  LVM physical volume (VG pve)
+└─sda3  222.6G  LVM PV (VG pve)
    ├─pve-swap     7.65G
-   ├─pve-root    65.73G  ext4, mounted at /
+   ├─pve-root    65.73G  ext4, /
    └─pve-data   130.53G  thin pool for containers
 ```
 
-At the time of writing the thin pool was 66 % used for data and 3.4 % for metadata. The volume group had
-about 16 GB unallocated. There are 122 GB of root filesystems provisioned across the running containers,
-plus another 20 GB for the three stopped ones, so the pool is overcommitted on paper. Actual usage is
-what matters, and that was around 86 GB.
+Thin pool: 66 % data, 3.4 % metadata. ~16 GB unallocated in the VG. 122 GB root filesystems provisioned across running containers, another 20 GB for the three stopped ones — overcommitted on paper. Actual usage ~86 GB.
 
-`/mnt/data` is a plain ext4 filesystem on `sdb`, not a Proxmox storage entry. It is bind-mounted into
-several containers. The mount options are `noatime,nofail,errors=continue`, so a missing disk will not
-stop the host from booting.
+`/mnt/data` is plain ext4 on `sdb`, not a Proxmox storage entry. Bind-mounted into several containers. Options: `noatime,nofail,errors=continue` — a missing disk won't block boot.
 
 Space at capture:
 
@@ -113,56 +93,40 @@ Space at capture:
 | `/mnt/data` | 469 GB | 305 GB (69 %) | 140 GB |
 | `/boot/efi` | 1 GB | 9 MB | 1 GB |
 
-The root filesystem is the tightest part of the host. Most of the usage is `/var/lib/vz` (24 GB), of which
-11 GB is ISOs and templates and 14 GB is old dumps. The systemd journal is another 3 GB, and the APT cache
-is 1.4 GB. I have not deleted anything.
+Root is the tightest part. Most usage is `/var/lib/vz` (24 GB): 11 GB ISOs/templates, 14 GB old dumps. Journal is another 3 GB, APT cache 1.4 GB. Nothing deleted yet.
 
-What is on the data disk:
+Data disk contents:
 
 | Path | Size | Notes |
 |---|---:|---|
-| `/mnt/data/public/Downloads` | 224 GB | Media library and downloads |
+| `/mnt/data/public/Downloads` | 224 GB | media library and downloads |
 | `/mnt/data/public/immich` | 55 GB | Immich photo library |
-| `/mnt/data/public/backups` | 21 GB | 5 GB of B2 staging plus a 16 GB Windows VM dump from May |
-| `/mnt/data/private` | 6.4 GB | Private files, not shared with containers |
+| `/mnt/data/public/backups` | 21 GB | 5 GB B2 staging + 16 GB Windows VM dump (May) |
+| `/mnt/data/private` | 6.4 GB | private, not shared with containers |
 | `/mnt/data/public/syncthing` | 37 MB | Syncthing data |
-| `/mnt/data/public/NVR` | 44 KB | Empty |
+| `/mnt/data/public/NVR` | 44 KB | empty |
 
 ## Network
 
-The host is on the main LAN and also has two internal bridges. `vmbr0` is the real LAN. `vmbr1` is an
-isolated bridge for the lab network, with no IP address on the host. `vmbr2` exists but has no ports and is
-not used; the comment in the config says `#opnsense-lan`, so it is probably left over from an earlier plan.
+Host is on the main LAN with two internal bridges. `vmbr0` is the real LAN. `vmbr1` is the isolated lab bridge, no host address. `vmbr2` exists, no ports, unused — comment says `#opnsense-lan`, probably left over from an earlier plan.
 
 | Bridge | Address on host | Connected to |
-|---|---|---|
+|---|---|
 | `vmbr0` | `192.168.0.50/24` | `eno1`, physical LAN |
-| `vmbr1` | none | internal `10.10.10.0/24` lab network |
+| `vmbr1` | none | internal `10.10.10.0/24` |
 | `vmbr2` | none | nothing |
 
-The lab network is routed by CT 106, an OpenWrt container. It has one interface on `vmbr0` with the static
-address `192.168.0.150`, and one on `vmbr1` at `10.10.10.1`. All the `10.10.10.x` containers use it as
-gateway, DHCP server and DNS forwarder. The host has no address on `vmbr1`, but it can still reach the lab
-through the main router's route for `10.10.10.0/24`; it normally manages the containers with `pct`.
+The lab is routed by CT 106 (OpenWrt). It has one interface on `vmbr0` at `192.168.0.150`, one on `vmbr1` at `10.10.10.1`. All `10.10.10.x` containers use it as gateway, DHCP, and DNS forwarder. The host has no address on `vmbr1` but reaches the lab via the main router's route; it manages containers with `pct`.
 
-CT 106's firewall configuration does not currently load, and no NAT is active. The lab is a routed subnet,
-not a second NAT layer. I left it alone; [../containers/106-openwrt.md](../containers/106-openwrt.md) has
-the detail.
+CT 106's firewall config doesn't load and no NAT is active. The lab is a routed subnet, not a second NAT layer. Left alone. See [../containers/106-openwrt.md](../containers/106-openwrt.md).
 
-DNS for the host is `192.168.0.147`. That address is a keepalived VIP shared by CT 107 and the Pi. CT 107
-has the real address `192.168.0.146` and is the MASTER, with priority 100. The Pi is at `192.168.0.169`
-and is the BACKUP, with priority 50. Both run AdGuard Home, and CT 107 syncs its configuration to the Pi
-every two hours. The host's resolver therefore survives CT 107 going down, as long as the Pi is up and has
-taken the VIP. OpenWrt forwards lab DNS to `.147` as well.
+Host DNS is `192.168.0.147`, a keepalived VIP shared by CT 107 and the Pi. CT 107 (`192.168.0.146`) is MASTER, priority 100. The Pi (`192.168.0.169`) is BACKUP, priority 50. Both run AdGuard Home; CT 107 syncs config to the Pi every two hours. The host's resolver survives CT 107 going down if the Pi is up and holds the VIP. OpenWrt forwards lab DNS to `.147` too.
 
-The public egress IP at capture was `103.188.163.113`. There is no IPv6 beyond link-local, and no VLANs.
+Public egress IP at capture: `103.188.163.113`. No IPv6 beyond link-local, no VLANs.
 
-There is no Proxmox firewall policy configured. `pve-firewall` is running but disabled. The individual
-`firewall=1` flags on some containers therefore do nothing. That is fine for the current single-user LAN,
-but it is worth remembering when reading the container configs.
+No Proxmox firewall policy. `pve-firewall` runs but is disabled. The per-container `firewall=1` flags do nothing. Fine for a single-user LAN, but worth remembering when reading container configs.
 
-Cloudflare WARP is installed on the host, but the tunnel is manually disconnected. There is a separate
-`warp-exit` container (CT 113) for that job, currently stopped. The host package looks like a leftover.
+Cloudflare WARP is installed on the host but disconnected. The dedicated `warp-exit` container (CT 113) is stopped. The host package looks like a leftover.
 
 ### `/etc/network/interfaces`
 
@@ -199,75 +163,58 @@ iface vmbr2 inet manual
 
 ## Containers
 
-There are 16 LXC containers and no virtual machines. Thirteen are normally running. The three stopped ones
-are 112 (`libre-webui`), 113 (`warp-exit`) and 118 (`tg-proxy`), and all three have autostart disabled.
+16 LXC containers, no VMs. Thirteen normally run. The stopped ones are 112 (`libre-webui`), 113 (`warp-exit`), 118 (`tg-proxy`) — all autostart disabled.
 
-The running containers have 24 vCPU and about 32 GiB of RAM allocated in total, against 4 threads and
-15 GiB of physical RAM. Those are limits rather than reservations, so it is not as bad as it looks, but a
-busy moment in Jellyfin, Immich and the dev container at the same time can push the host into swap.
+Running containers sum to 24 vCPU and ~32 GiB RAM against 4 threads and 15 GiB physical. Those are limits, not reservations, so it's not as bad as it looks. But Jellyfin, Immich, and the dev container all being busy at once can push the host into swap.
 
-Startup order is set for the infrastructure pieces:
+Startup order is set for infrastructure:
 
-- order 1: CT 101 `npm`, CT 106 `openwrt`, CT 107 `adguard`
+- order 1: CT 101 `npm`, 106 `openwrt`, 107 `adguard`
 - order 2: CT 110 `tailscale`
-- order 3: CT 104 `jellyfin`, CT 105 `NAS`, CT 109 `immich`
+- order 3: CT 104 `jellyfin`, 105 `NAS`, 109 `immich`
 - order 4: CT 103 `aria2`
 
-CT 100, 102, 108, 111 and 119 have no startup order. That means they can start before DNS or the internal
-router is ready, which is usually harmless but can produce noisy logs on boot.
+CT 100, 102, 108, 111, 119 have no order. They can start before DNS or the router is ready — usually harmless, but noisy logs on boot.
 
-The full list, with addresses and mounts, is in [guest-inventory.md](guest-inventory.md).
+Full list with addresses and mounts: [guest-inventory.md](guest-inventory.md).
 
 ## Services and scheduled work
 
-The Proxmox stack itself is the usual set: `pve-cluster`, `pvedaemon`, `pveproxy`, `spiceproxy`,
-`pve-firewall` and the LXC services.
+Standard stack: `pve-cluster`, `pvedaemon`, `pveproxy`, `spiceproxy`, `pve-firewall`, LXC services.
 
 Beyond that:
 
-- `lxc-backup-b2.sh` runs from root's crontab every Sunday at 03:00. It dumps seven containers and uploads
-  them to Backblaze B2. It is described in [../operations/backups.md](../operations/backups.md).
-- `lxc-backup-resume.service` runs at boot, waits 45 seconds and resumes an interrupted backup if a state
-  file is still present.
-- `smartd` watches the disks and mails root on problems.
-- `chrony` keeps time. `systemd-zram-generator` creates the compressed swap. `sysstat` records CPU and I/O
-  history. `postfix` only listens on localhost, and its queue is empty.
-- `pve-daily-update.timer` refreshes package lists once a day. Unattended upgrades are not configured.
-- `shutdown-webhook.service` listens on port 9999. It is the local receiver the ESP32 calls when the UPS
-  monitor decides the node should go down. The service is separate from the Proxmox API.
+- `lxc-backup-b2.sh` — root crontab, Sunday 03:00. Dumps seven containers, uploads to Backblaze B2. See [../operations/backups.md](../operations/backups.md).
+- `lxc-backup-resume.service` — at boot, waits 45 s, resumes an interrupted backup if a state file exists.
+- `smartd` — watches disks, mails root on problems.
+- `chrony` — time. `systemd-zram-generator` creates swap. `sysstat` records CPU/I/O. `postfix` listens on localhost only, queue empty.
+- `pve-daily-update.timer` — refreshes package lists daily. No unattended upgrades.
+- `shutdown-webhook.service` — listens on 9999. The local receiver the ESP32 calls when the UPS monitor decides the node should go down. Separate from the Proxmox API.
 
-`fail2ban` is not installed. The host has 58 pending package updates at the moment, mostly Debian security
-updates.
+No `fail2ban`. 58 pending package updates, mostly Debian security.
 
 ## Backups
 
-There are no native Proxmox backup jobs. The weekly script is the only automated protection. It covers
-CT 107, 101, 106, 105, 103, 110 and 109. The other nine containers are not backed up.
+No native Proxmox backup jobs. The weekly script is the only automated protection. It covers CT 107, 101, 106, 105, 103, 110, 109. The other nine aren't backed up.
 
-One important detail: `vzdump` does not include bind mounts. The media and photo directories under
-`/mnt/data` are not inside any container archive, even for the containers that are backed up. They need
-their own protection. The Immich scripts are cloned on the host at `/immich-b2-backup`, but I did not find
-a host cron entry or timer for them yet.
+`vzdump` does not include bind mounts. Media and photos under `/mnt/data` are not in any container archive, even for backed-up containers. They need their own protection. Immich scripts are cloned at `/immich-b2-backup`, but I found no host cron entry or timer for them yet.
 
-The full picture, including how to restore, is in [../operations/backups.md](../operations/backups.md).
+Full picture, including restore: [../operations/backups.md](../operations/backups.md).
 
 ## Health and capacity
 
 At capture:
 
-- CPU load was 0.24, memory had 9.6 GB available, and swap usage was 221 MB out of 11 GB.
-- No systemd units had failed.
-- The only recurring log message was the `sdb` pending-sector warning.
-- `/` was 65 % full, `/mnt/data` 69 %, the thin pool 66 %.
+- CPU load 0.24, 9.6 GB memory available, 221 MB swap used out of 11 GB
+- no failed systemd units
+- the only recurring log message was the `sdb` pending-sector warning
+- `/` 65 % full, `/mnt/data` 69 %, thin pool 66 %
 
-The host is not under pressure right now. The two things I would keep an eye on are the USB data disk and
-the root filesystem. The root disk has 22 GB free, which is enough for normal operation but not much room
-for new dumps. The old dumps and the 16 GB Windows VM image are the obvious things to clean up if space is
-needed later.
+Not under pressure. The two things to watch: the USB data disk and root filesystem. Root has 22 GB free — enough for normal use, not much for new dumps. The old dumps and the 16 GB Windows image are the obvious cleanup targets if space gets tight.
 
 ## Common commands
 
-I keep these here because I always end up looking them up.
+The ones I keep looking up.
 
 ```bash
 ssh root@prox
@@ -317,8 +264,7 @@ apt update
 apt list --upgradable
 ```
 
-Network changes are applied with `ifreload -a` after editing `/etc/network/interfaces`. That briefly
-disrupts networking, so I do not run it unless I have to.
+Network changes are applied with `ifreload -a` after editing `/etc/network/interfaces`. That briefly disrupts networking, so I don't run it unless I have to.
 
 Shutdown and boot:
 
@@ -408,3 +354,4 @@ WantedBy=multi-user.target
 |---|---|
 | 2026-10-31 | First version, from a live read-only inspection |
 | 2026-10-31 | Rewritten in a plainer style; shutdown receiver documented in the UPS page |
+| 2026-11-02 | Rewritten in my own voice |

@@ -1,12 +1,11 @@
 # Service notes
 
-These pages will describe capabilities that span more than one container. The per-container pages stay in
-`containers/`; these explain how a service works end to end.
+These pages describe capabilities that span more than one container. The per-container pages stay in `containers/`; these explain how a service works end to end.
 
-**Status:** the UPS page is written; the rest are still planned.
+**Status:** UPS page written; the rest planned.
 
 | Page | Covers | Main guests |
-|---|---|---|
+|---|---|
 | [ups.md](ups.md) | ESP32/Pi UPS monitor, shutdown and wake path | Pi, ESP32, host |
 | `dns.md` | AdGuard, OpenWrt dnsmasq, upstreams, filtering | 107, 106, Pi |
 | `reverse-proxy.md` | NPM hosts, certificates, upstreams | 101 |
@@ -16,7 +15,7 @@ These pages will describe capabilities that span more than one container. The pe
 | `monitoring.md` | Prometheus, Grafana, exporters, alerts | 119 |
 | `backup-restore.md` | Strategy, B2, Immich, restore drills | host, 108, 109 |
 
-The host and backup details already exist, so start with:
+Host and backup details already exist, so start with:
 
 - [proxmox/prox-host.md](../proxmox/prox-host.md)
 - [proxmox/guest-inventory.md](../proxmox/guest-inventory.md)
