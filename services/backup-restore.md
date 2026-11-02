@@ -2,7 +2,11 @@
 
 This is the cross-cutting view of what's protected and what isn't. The operational detail lives in [operations/backups.md](../operations/backups.md); this page ties it to each service.
 
-## What is backed up (B2, weekly)
+## What is backed up
+
+Two mechanisms:
+
+**B2, weekly (script):**
 
 | Container | What it protects |
 |---|---|
@@ -14,22 +18,23 @@ This is the cross-cutting view of what's protected and what isn't. The operation
 | CT 110 tailscale | tailscale state (305 MB) |
 | CT 109 immich | Immich rootfs — **not** the photo library (3.2 GB) |
 
-## Not in the B2 backup
+**Zerobyte (CT 108):** the useful data — the LXC backup files, and the Immich data (library + DB).
+
+## Not covered
 
 | Data | Where | Notes |
 |---|---|---|
 | Media library | `/mnt/data/public/Downloads` | ~225 GB, treated as replaceable |
-| Photo library | `/mnt/data/public/immich` | most valuable; backup scripts exist but **not scheduled** |
 | Private files | `/mnt/data/private` | no copy found |
-| Dev/code projects | CT 100 | not backed up |
-| Journal DB (SQLite) | CT 102 | not backed up |
-| Jellyfin config | CT 104 | not backed up |
-| Solar dashboard DB | CT 119 | not backed up |
+| Dev/code projects | CT 100 | intentionally not backed up |
+| Journal DB (SQLite) | CT 102 | intentionally not backed up |
+| Jellyfin config | CT 104 | intentionally not backed up |
+| Solar dashboard DB | CT 119 | intentionally not backed up (solar only) |
 | Windows VM dump | `/mnt/data/public/backups/win10-vm.vma.zst` | 16 GB, local only (May) |
 
 ## The bind-mount gap
 
-`vzdump` skips bind mounts. All large data lands on bind mounts, so container backups never include it. Data protection must be handled separately (Immich scripts intended but not scheduled; nothing for media/private).
+`vzdump` skips bind mounts. Container backups never include the large bind-mounted data. That data is handled by Zerobyte (Immich library/DB) or deliberately left un-backed-up (media, private, dev).
 
 ## Restore order (whole host)
 
@@ -43,7 +48,7 @@ This is the cross-cutting view of what's protected and what isn't. The operation
 
 ## Open questions
 
-- Schedule the Immich backup (uncomment the cron line).
 - Decide a fate for `/mnt/data/private` (add to some backup).
 - Clean up the 16 GB Windows VM dump if unneeded.
+- Confirm Zerobyte's repository targets and recent run status.
 - Do a test restore to validate the process.

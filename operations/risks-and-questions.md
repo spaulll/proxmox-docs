@@ -26,7 +26,7 @@ USB adds failure modes an internal disk doesn't have: cable, enclosure, power, c
 
 Seven containers backed up by design. Nine intentionally excluded. Bind-mounted data is never in a container archive, and `/mnt/data/private` has no other copy I found.
 
-The Immich scripts exist, but I haven't confirmed they run on a schedule. That's on the Immich page list.
+The photo library and DB are backed up by Zerobyte (CT 108). I haven't verified a recent successful run or the repository targets.
 
 ### DNS and the lab router
 

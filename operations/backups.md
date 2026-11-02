@@ -121,16 +121,7 @@ Whole-host recovery order: reinstall Proxmox, recreate `local-lvm` and the `/mnt
 
 ## Immich
 
-Separate repository at `/immich-b2-backup` on the host. Scripts for the database, library, and a report:
-
-| Script | Purpose |
-|---|---|
-| `immich-db-backup.sh` | database dump |
-| `immich-library-backup.sh` | library upload |
-| `immich-data-backup-flow.sh` | runs both |
-| `immich-backup-report.sh` | status report |
-
-README mentions weekly cron jobs, but I found no host cron entry or systemd timer for them. The schedule is probably inside CT 109, or the scripts are run by hand. Confirming when I document Immich. Until then, treating the photo library as unverified.
+The photo library and its database are backed up by **Zerobyte** (CT 108) — that's the active mechanism. An older Immich B2 script set exists at `/usr/local/bin/immich-backup/` (db dump, library upload, flow, report) with its cron commented out; it was superseded by Zerobyte.
 
 ## Housekeeping
 
@@ -146,7 +137,6 @@ None deleted. If the Windows VM is really gone, that file alone frees 16 GB on t
 
 - Whether to keep more than one B2 copy per container. Right now a bad source can replace the last good archive.
 - Where `/mnt/data/private` should be backed up.
-- Whether the Immich scripts are actually scheduled.
 - Whether to do a test restore — hasn't happened yet as far as I can tell.
 
 ## Commands I use

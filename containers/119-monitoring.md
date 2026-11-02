@@ -1,6 +1,6 @@
 # CT 119, monitoring
 
-Docker host, tagged as the monitoring stack. In practice it's running a solar dashboard right now, not a Prometheus/Grafana stack.
+Docker host, used for the **solar dashboard and solar monitoring** only. There is no Prometheus/Grafana stack — the "monitoring" name overstates it.
 
 ## Identity and resources
 
@@ -44,7 +44,7 @@ Ports:
 
 ## Backup
 
-CT 119 is **not** in the B2 job. The solar dashboard app and its SQLite DB are not backed up.
+CT 119 is intentionally **not** in the B2 job. Solar dashboard data is not part of the protected set.
 
 ## Health
 
@@ -62,6 +62,5 @@ CT 119 is **not** in the B2 job. The solar dashboard app and its SQLite DB are n
 
 ## Open questions
 
-- The tag says "monitoring" (Prometheus/Grafana), but nothing's deployed in Docker. Was the stack removed, or never set up here?
-- The solar dashboard (also running inside CT 100) appears twice across containers — is one canonical?
-- Not backed up despite holding a SQLite DB.
+- The solar dashboard also runs inside CT 100 — is one of the two canonical?
+- Docker is empty here; intended for anything, or just leftover?

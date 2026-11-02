@@ -54,30 +54,15 @@ Postgres and Redis bind to localhost only. The API and ML listen on all interfac
 - Root filesystem: the app, PostgreSQL data (`/var/lib/postgresql/16/main`, ~336 MB), and cache.
 - Bind mount `/mnt/nas`: the actual photo library, on host `/mnt/data/public/immich`. Subdirs: `upload`, `library`, `thumbs`, `profile`, `encoded-video`, `backups`.
 
-The bind mount is the sensitive part. `vzdump` skips it, so the weekly B2 container archive does **not** contain the photos. The Immich backup scripts (see below) exist specifically for the library + database.
+The bind mount is the sensitive part. `vzdump` skips it, so the weekly B2 container archive does **not** contain the photos. The photo library (and DB) are backed up by Zerobyte (CT 108), not by this container's own scripts.
 
 ## Database
 
 PostgreSQL 16 cluster, database `immich`, user `immich`, vector extension `vectorchord`. The DB runs on localhost with the app. Connection settings come from `/opt/immich/.env` (DB_HOSTNAME=127.0.0.1). Credentials live in that `.env`; I do not reproduce them here.
 
-## Immich backup scripts
+## Backup
 
-There is a clone of the Immich B2 backup repo at `/usr/local/bin/immich-backup/`:
-
-| Script | Purpose |
-|---|---|
-| `immich-db-backup.sh` | dumps the database |
-| `immich-library-backup.sh` | uploads the photo library |
-| `immich-data-backup-flow.sh` | runs both |
-| `immich-backup-report.sh` | status report |
-
-The flow is registered in root's crontab **but commented out**:
-
-```
-# 0 2 * * SUN /usr/local/bin/immich-backup/immich-data-backup-flow.sh
-```
-
-So as of inspection the Immich backup is **not scheduled**. The scripts exist and are executable, but nothing runs them automatically. This matches the open question in operations/backups.md. Until the cron line is uncommented (or a timer added), the photo library has no automated protection beyond the raw disk.
+The photo library and its database are backed up by **Zerobyte** (CT 108). That's the current mechanism. An older clone of an Immich B2 backup repo still sits at `/usr/local/bin/immich-backup/` (scripts for db dump, library upload, flow, report), but its cron entry is commented out — that job was superseded by Zerobyte. The scripts remain as a historical fallback, not the active path.
 
 ## Health
 
@@ -108,7 +93,6 @@ After restore, verify the bind mount, the `upload` symlink, and that postgres is
 
 ## Open questions
 
-- Why is the Immich backup cron line commented out? Intentional, or left disabled?
 - Is the ML using the GPU, or falling back to CPU? The passthrough is present.
 - Does anything walk `/mnt/data/public/immich/backups`? It's inside the photo store.
-- The `immich-backup-report.sh.bk` backup file in the scripts dir — stale or needed?
+- The `immich-backup-report.sh.bk` backup file in the old scripts dir — stale or needed?

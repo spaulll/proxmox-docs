@@ -1,6 +1,6 @@
 # CT 108, zerobyte
 
-Zerobyte is a restic-based backup automation service. It's the intended front-end for managing the backup repositories — currently running as a Bun/Node service, no Docker.
+Zerobyte is the restic-based backup automation service for the homelab. This is the active tool protecting the useful data (LXC backup files, Immich library + DB). Runs as a Bun/Node service, no Docker.
 
 ## Identity and resources
 
@@ -41,9 +41,16 @@ There's a `compose.yaml` and `Dockerfile` in the repo, but **no Docker is runnin
 | 22/tcp | sshd | SSH |
 | 25 | postfix | localhost |
 
-## Backup
+## What it backs up
 
-CT 108 is **not** in the B2 job (it *is* the backup service). The `ZEROBYTE_REPOSITORIES_DIR` is presumably on the host data disk (not a container bind mount here, it's configured via env).
+Per the owner, Zerobyte handles the useful data:
+
+- the LXC backup files (the B2/scheduled container backups)
+- the Immich data — library and database
+
+So the photo library and DB are protected via Zerobyte, replacing the old Immich B2 scripts (see [109-immich.md](109-immich.md)). The repository storage is configured via `ZEROBYTE_REPOSITORIES_DIR` in the `.env` (value not reproduced).
+
+CT 108 itself is **not** in the B2 job — it is the backup service, not a client.
 
 ## Health
 
@@ -59,6 +66,6 @@ CT 108 is **not** in the B2 job (it *is* the backup service). The `ZEROBYTE_REPO
 
 ## Open questions
 
-- Where do the restic repositories live? `ZEROBYTE_REPOSITORIES_DIR` is a path; if it points at `/mnt/<as` or host disk, the actual backup data survives a container loss.
-- The `/mnt/nas` mount points at the Immich library — is this the backup source or the restic repo storage?
+- Where do the restic repositories live? `ZEROBYTE_REPOSITORIES_DIR` is a path; if it points at the host data disk, the backup data survives a container loss.
 - Runs via Bun natively, but the repo has Docker files — two deployment paths.
+- I haven't verified the live repository targets or a recent successful run.

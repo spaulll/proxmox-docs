@@ -17,8 +17,8 @@ Immich, self-hosted photo server. The photo library is the most valuable non-rep
 ## Backup status
 
 - The B2 container backup includes only the rootfs (archive 3.2 GB); the bind-mounted library is **not** included.
-- Dedicated Immich backup scripts exist at `/usr/local/bin/immich-backup/` (db dump + library upload to B2), **but the cron entry is commented out** — nothing runs them automatically.
-- So the photo library currently has no automated protection beyond the raw disk.
+- The photo library and DB are backed up by **Zerobyte** (CT 108) — that's the current mechanism.
+- An older Immich B2 script set at `/usr/local/bin/immich-backup/` is still present but its cron is commented out; it was superseded by Zerobyte.
 
 ## Access
 
@@ -26,6 +26,5 @@ Immich, self-hosted photo server. The photo library is the most valuable non-rep
 
 ## Open questions
 
-- Why is the Immich backup cron line commented out? Intentional or left disabled?
 - Is ML using the GPU? Passthrough present, untested.
-- Restore path: container from B2, then library must be restored separately.
+- Restore path: container from B2, then library restored via Zerobyte.
