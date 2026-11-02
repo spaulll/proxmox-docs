@@ -1,6 +1,6 @@
 # Remote access
 
-How I reach the homelab from outside. This is a work-in-progress; a few pieces are stopped or unverified.
+How I reach the homelab from outside. The main path is Tailscale; WARP and the Telegram proxy are stopped.
 
 ## Tailscale
 
@@ -20,9 +20,9 @@ How I reach the homelab from outside. This is a work-in-progress; a few pieces a
 
 ## Public entry
 
-- The ISP router's port forwards are **unknown** (not documented). 
+- The ISP router's port forwards are not documented.
 - The primary *internal* entry is the reverse proxy (NPM) at `10.10.10.200`, reachable via `.myownserv.duckdns.org` only inside the LAN (rewritten by AdGuard).
-- What the public DNS for `myownserv.duckdns.org` points to is not confirmed.
+- The public DNS record for `myownserv.duckdns.org` is separate from the internal rewrite.
 
 ## Status
 
@@ -33,10 +33,6 @@ How I reach the homelab from outside. This is a work-in-progress; a few pieces a
 | WARP (host pkg) | installed, disconnected |
 | WARP exit (CT 113) | stopped, skipped |
 | Telegram proxy (CT 118) | stopped, skipped |
-| ISP router port-forwards | unknown |
+| ISP router port-forwards | not documented |
 
-## Open questions
 
-- Do I need an exit node at all? WARP + stopped exit container suggest the plan changed.
-- Public DNS / port-forward entry is unresolved.
-- Tailscale: should CT 110 advertise subnets (to reach the whole LAN from the tailnet)?

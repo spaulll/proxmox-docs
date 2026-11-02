@@ -88,9 +88,4 @@ pct exec 104 -- systemctl status jellyfin
 pct exec 104 -- ss -tlnp | grep 8096
 ```
 
-## Open questions
 
-- Why is CT 104 excluded from the B2 backup? It's the one most likely to be "rebuildable", but the config metadata isn't cheap to recreate.
-- Is QSV/GPU transcoding actually working, or falling back to CPU? The passthrough and groups are in place but untested by me.
-- `jellyfin-ffmpeg7` is in removed (rc) state — leftover; safe to purge.
-- The drop-in is all comments — was hardening ever enabled, or left at defaults on purpose?

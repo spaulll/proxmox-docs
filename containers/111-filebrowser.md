@@ -60,7 +60,4 @@ CT 111 is **not** in the B2 job. The config is small; the data is the bind-mount
 | filebrowser stops | Web file manager down; data safe on disk. |
 | Container lost | Recreate config; data unaffected (bind mount). |
 
-## Open questions
 
-- Login auth uses users defined where? (FileBrowser user db — not read).
-- Upload staging → `/usr/local/community-scripts/tmp` — is that a deliberate upload landing zone?

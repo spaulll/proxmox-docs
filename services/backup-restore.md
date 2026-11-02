@@ -42,13 +42,4 @@ Two mechanisms:
 2. Set up rclone.
 3. Restore in dependency order: CT 107 (DNS) → CT 106 (router) → CT 101 (proxy) → the rest.
 
-## Test restore
 
-- None has been performed yet. This is a known gap.
-
-## Open questions
-
-- Decide a fate for `/mnt/data/private` (add to some backup).
-- Clean up the 16 GB Windows VM dump if unneeded.
-- Confirm Zerobyte's repository targets and recent run status.
-- Do a test restore to validate the process.

@@ -26,8 +26,4 @@ How the media library is stored and served. Movies, series, anime, and a YouTube
 - Jellyfin config/watch state (CT 104) is not in the B2 backup; it must be rebuilt if lost.
 - `aria2` downloads into `/mnt/nas` (same data path) and is in the B2 backup.
 
-## Open questions
 
-- Is GPU transcoding actually functioning, or falling back to CPU? Passthrough present, untested.
-- Jellyfin excluded from backup deliberately? The metadata is small but non-trivial to rebuild.
-- `jellyfin-ffmpeg7` is in removed state — leftover, safe to purge.

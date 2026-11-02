@@ -59,8 +59,4 @@ Both nodes run AdGuard Home `v0.107.79`. Details in [containers/107-adguard.md](
 | `prox` stops | CT 107 + 106 stop; Pi holds house-LAN VIP, lab loses router. |
 | Both DNS nodes down | DNS down for LAN and lab. |
 
-## Open questions
 
-- Pi's `dns.prox.dpdns.org` TLS cert: how is it issued/renewed? Not synced by `adguardhome-sync`.
-- Should keepalived health-check AdGuard itself? Currently it doesn't.
-- Is the 2-hour sync interval deliberate? It bounds standby freshness.

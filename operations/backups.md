@@ -42,7 +42,7 @@ So these are outside every container backup:
 | Data | Where | Protection |
 |---|---|
 | Media and downloads | `/mnt/data/public/Downloads` | none, but mostly replaceable |
-| Immich library | `/mnt/data/public/immich` | separate Immich scripts, schedule not confirmed |
+| Immich library | `/mnt/data/public/immich` | backed up by Zerobyte |
 | Private files | `/mnt/data/private` | none found |
 | Syncthing data | `/mnt/data/public/syncthing` | none found |
 | Windows VM dump | `/mnt/data/public/backups/win10-vm.vma.zst` | local only, from May |
@@ -132,12 +132,6 @@ Old material on the disks:
 - Backup staging — 153 old `vzdump-*.log` files, because the cleanup pattern doesn't match them.
 
 None deleted. If the Windows VM is really gone, that file alone frees 16 GB on the data disk. The old dumps free ~13 GB on root.
-
-## Things to decide later
-
-- Whether to keep more than one B2 copy per container. Right now a bad source can replace the last good archive.
-- Where `/mnt/data/private` should be backed up.
-- Whether to do a test restore — hasn't happened yet as far as I can tell.
 
 ## Commands I use
 

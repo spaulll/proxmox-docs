@@ -16,7 +16,7 @@ Last full review: 2026-10-31.
 | [proxmox/guest-inventory.md](proxmox/guest-inventory.md) | Quick reference for all 16 containers, addresses, mounts |
 | [network/network-overview.md](network/network-overview.md) | How the LAN and internal lab fit together |
 | [operations/backups.md](operations/backups.md) | What's backed up, what isn't, how to restore |
-| [operations/risks-and-questions.md](operations/risks-and-questions.md) | Loose ends, trade-offs, open questions |
+| [operations/risks-and-questions.md](operations/risks-and-questions.md) | Accepted trade-offs and things worth watching |
 | [containers/README.md](containers/README.md) | Plan and checklist for per-container pages |
 | [containers/107-adguard.md](containers/107-adguard.md) | AdGuard Home, the DNS VIP, the Pi replica |
 | [containers/106-openwrt.md](containers/106-openwrt.md) | The lab router, DHCP/DNS, the firewall that won't load |

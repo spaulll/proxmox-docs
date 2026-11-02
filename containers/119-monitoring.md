@@ -60,7 +60,4 @@ CT 119 is intentionally **not** in the B2 job. Solar dashboard data is not part 
 | Docker fails | No containers to serve — currently no impact. |
 | Container lost | Solar app + DB gone, no backup. |
 
-## Open questions
 
-- The solar dashboard also runs inside CT 100 — is one of the two canonical?
-- Docker is empty here; intended for anything, or just leftover?

@@ -127,7 +127,7 @@ DNS works as expected. `openwrt.lan` resolves to `10.10.10.1`; `example.com` for
 
 NTP disabled in `/etc/config/system`. `sysntpd` init script is linked in `/etc/rc.d`, but no NTP process runs; the container takes time from the host kernel. Cron is linked too, but no `crond` process and root's crontab is empty — no scheduled jobs.
 
-138 opkg packages. Versions: `dnsmasq 2.90-r4`, `firewall4 2024.12.18~18fc0ead-r1`, `dropbear 2024.86-r1`, `uhttpd 2025.07.06~7e64e8ba-r4`, `odhcpd-ipv6only 2025.10.02~b14cf98c-r1`, `nlbwmon 2024.02.21~c7616bcf-r1`, LuCI `25.292.66247~75e41cb`. Didn't run `opkg update`, so pending update count unknown.
+138 opkg packages. Versions: `dnsmasq 2.90-r4`, `firewall4 2024.12.18~18fc0ead-r1`, `dropbear 2024.86-r1`, `uhttpd 2025.07.06~7e64e8ba-r4`, `odhcpd-ipv6only 2025.10.02~b14cf98c-r1`, `nlbwmon 2024.02.21~c7616bcf-r1`, LuCI `25.292.66247~75e41cb`.
 
 `nlbwmon` keeps its database under `/var/lib/nlbwmon`, inside the root filesystem — so it's in the backup.
 
@@ -177,15 +177,6 @@ pct exec 101 -- nslookup openwrt.lan 10.10.10.1
 ```
 
 After a restore, verify the static WAN address, default route, dnsmasq upstream, and whether the `fw4` error is still present. The lease table can be empty for a few minutes without meaning anything's wrong.
-
-## Open questions
-
-- Was `masq-lan-to-internal` ever meant to work? Looks like an old attempt to hide main-LAN sources when reaching the lab; it currently prevents the whole firewall from loading.
-- Is `192.168.0.150` reserved on the ISP router, or static outside the DHCP pool? Not logged into the router.
-- Is the main router's `10.10.10.0/24` route deliberate and documented? It's what makes the routed lab work without NAT.
-- Why does CT 106 have `/dev/net/tun` passed through with no VPN installed?
-- Is NTP off deliberate? The container shares the host clock, so no problem.
-- How many opkg updates are pending? Didn't refresh lists.
 
 ## Change log
 

@@ -83,7 +83,7 @@ No startup order, not backed up. An old `vzdump-qemu-108` log from May suggests 
 
 The Immich photo server. Four cores, 6 GB RAM, 20 GB disk. Photo library on `/mnt/data/public/immich`, mounted at `/mnt/nas`. GPU passed through: gid 992 for `renderD128`, gid 44 for `card1`.
 
-Order 3. Root filesystem is in the weekly backup, the photo library is not (vzdump skips bind mounts). The separate Immich scripts on the host should cover the library, but I still need to confirm their schedule.
+Order 3. Root filesystem is in the weekly backup, the photo library is not (vzdump skips bind mounts). The library is backed up by Zerobyte.
 
 ### CT 110, tailscale-LXC
 
@@ -134,7 +134,7 @@ All bind mounts. None are in a container dump.
 
 CT 104 and 109 have the Intel GPU. CT 106, 110, 113, 118 have `/dev/net/tun`. CT 106 has no VPN package or process using it — that passthrough looks left over.
 
-One inconsistency: `renderD128` is gid 993 in CT 104, gid 992 in CT 109. May be correct on the host; want to check when I do those pages.
+One inconsistency: `renderD128` is gid 993 in CT 104, gid 992 in CT 109.
 
 ## Resource picture
 
@@ -142,7 +142,7 @@ Running containers sum to 24 vCPU and ~32 GiB RAM in limits. The host has 4 thre
 
 Stopped containers still hold 20 GB of thin volumes. No CPU or RAM while stopped, but they count against the pool.
 
-## Loose ends
+## Known quirks
 
 - Nine containers are not in the backup: 100, 102, 104, 108, 111, 112, 113, 118, 119. That selection is deliberate.
 - CT 100, 102, 108, 111, 119 have no startup order.

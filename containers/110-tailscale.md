@@ -50,7 +50,4 @@ CT 110 is in the B2 job (archive 305 MB on 2026-10-25). The state (`/var/lib/tai
 | tailscaled stops | This node drops off the tailnet until restarted. |
 | Container lost | Restore from B2; re-auth may be needed (device re-added to tailnet). |
 
-## Open questions
 
-- It offers exit-node capability but the host also has WARP + a stopped `warp-exit` CT. Is this the intended exit path, or unused?
-- Only this one node plus the Pi are online on the tailnet; some peers are stale.

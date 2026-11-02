@@ -35,8 +35,4 @@ The remaining 10 proxy-host files are not yet identified.
 - Upstreams see the real client IP (X-Real-IP / X-Forwarded-For set).
 - Admin authentication is required; credentials are not in this repo.
 
-## Open questions
 
-- What are the remaining 10 proxy-host configs? Not yet inspected.
-- Is `custom_ssl/npm-3` used for a specific public entry?
-- Does anything validate cert renewal actually succeeds (not just logs)?

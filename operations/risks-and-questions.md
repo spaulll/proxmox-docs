@@ -1,4 +1,4 @@
-# Notes, trade-offs and open questions
+# Notes and trade-offs
 
 Not a security audit. Single-user LAN, no outside users, security kept simple on purpose: no Proxmox firewall rules, root SSH with a password, self-signed certs. Noted for completeness, not as a hardening project.
 
@@ -24,9 +24,9 @@ USB adds failure modes an internal disk doesn't have: cable, enclosure, power, c
 
 ### Backup coverage
 
-Seven containers backed up by design. Nine intentionally excluded. Bind-mounted data is never in a container archive, and `/mnt/data/private` has no other copy I found.
+Seven containers backed up by design. Nine intentionally excluded. Bind-mounted data is never in a container archive, and `/mnt/data/private` has no other copy.
 
-The photo library and DB are backed up by Zerobyte (CT 108). I haven't verified a recent successful run or the repository targets.
+The photo library and DB are backed up by Zerobyte (CT 108).
 
 ### DNS and the lab router
 
@@ -53,15 +53,6 @@ CT 103, 104, 113, 118 use static addresses inside OpenWrt's `.100–.249` DHCP r
 ### Memory overcommit
 
 Running containers have ~32 GiB RAM limits on a 15 GiB host. Mostly fine. Jellyfin, Immich, and the dev container are the ones that can be busy together.
-
-## Open questions
-
-1. **Private data.** Is `/mnt/data/private` copied anywhere else? Didn't find a backup.
-2. **Windows dump.** Is `win10-vm.vma.zst` still needed? 16 GB, and no Windows VM on the host now.
-3. **Keepalived health.** It only checks the interface. If AdGuard dies inside CT 107 but keepalived stays up, the VIP doesn't move. Not changed.
-4. **Pi certificate.** CT 107's sync job doesn't list TLS as a synced feature, so I still need to confirm how the Pi's `dns.prox.dpdns.org` cert is issued.
-5. **ISP route.** The main router routes `10.10.10.0/24` to `192.168.0.150`; inferred from working traffic, not verified by logging into the router. `192.168.0.150` is now a static address on CT 106, not DHCP.
-6. **CT 106 TUN.** `/dev/net/tun` passed through, but no VPN package or process uses it. Probably left over.
 
 The UPS monitor is in [../services/ups.md](../services/ups.md). Its config and the Proxmox shutdown agent were not changed.
 

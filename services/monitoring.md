@@ -24,7 +24,4 @@ This covers the "monitoring" container. Short version: there is no Prometheus/Gr
 - No infra alerting (other than the UPS monitor + SMART).
 - The CT 119 container is intentionally not in the B2 backup (solar only).
 
-## Open questions
 
-- Two solar-dashboard copies: which is canonical?
-- Does the solar dashboard need anything else, or is this the whole story?

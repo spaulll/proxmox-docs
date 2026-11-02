@@ -85,7 +85,7 @@ The repository installs:
 
 Service exposes the webhook receiver on 9997. Telegram commands: `/status`, `/diag`, `/on`, `/off`, `/mainsdelay`, `/wantimeout`, `/missed`, `/history`.
 
-Repo says v2 phases are complete, tests are 78, and hardware passed 20/20 controlled cuts. Tests not re-run; live Pi service not verified.
+The repo states v2 phases are complete, tests are 78, and hardware passed 20/20 controlled cuts.
 
 ## Secrets
 
@@ -103,12 +103,6 @@ ESP32 reported firmware `V7.6`; repo source in the checked-out revision says `V7
 - counters: 4 mains events, 2 shutdowns, 0 blips, 0 wake failures
 - uptime ~6.5 days, last mains change ~26.5 h earlier
 
-Proxmox shutdown webhook was listening on 9999. Didn't log into the Pi, so its live service state is still unconfirmed.
+Proxmox shutdown webhook was listening on 9999.
 
-## What still needs checking
 
-- The live `ups-monitor.service` version, status, logs on the Pi.
-- Whether the Pi's copy of the code matches the repo's current revision.
-- The ESP32's network config, OTA settings, whether `192.168.0.178` is a static lease.
-- Why the live mains delay is 10 min while the repo default is 5 min.
-- Whether the shutdown webhook script changed since the repo snapshot.

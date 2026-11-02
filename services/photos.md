@@ -24,7 +24,4 @@ Immich, self-hosted photo server. The photo library is the most valuable non-rep
 
 - NPM exposes `immich.myownserv.duckdns.org` → `10.10.10.234:2283`.
 
-## Open questions
 
-- Is ML using the GPU? Passthrough present, untested.
-- Restore path: container from B2, then library restored via Zerobyte.

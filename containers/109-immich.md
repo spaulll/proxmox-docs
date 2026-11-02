@@ -91,8 +91,4 @@ pct start 109
 
 After restore, verify the bind mount, the `upload` symlink, and that postgres is up. The library itself needs its own restore.
 
-## Open questions
 
-- Is the ML using the GPU, or falling back to CPU? The passthrough is present.
-- Does anything walk `/mnt/data/public/immich/backups`? It's inside the photo store.
-- The `immich-backup-report.sh.bk` backup file in the old scripts dir — stale or needed?

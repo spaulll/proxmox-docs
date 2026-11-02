@@ -72,7 +72,4 @@ CT 102 is **not** in the B2 job. The app, its code, and the SQLite journal DB ar
 
 No automated backup. The journal data (SQLite) lives only in this container. Would need a manual copy.
 
-## Open questions
 
-- Not backed up despite holding a user database? A simple `sqlite3 .backup`/copy of `journal.db` would cover it cheaply.
-- `journal.db-wal`/`-shm` present — DB is WAL mode; a plain file copy while running isn't a safe backup.

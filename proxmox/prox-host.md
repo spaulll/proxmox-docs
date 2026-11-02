@@ -46,7 +46,7 @@ Lenovo ThinkCentre M900, type `10FM0022US`, serial `MJ04QE4U`. Small desktop, on
 
 `/dev/sdb` is the one to watch. 16,881 hours, 40 °C, overall PASSED — but **3 current pending sectors**. `smartd` logs them every 30 minutes. The count hasn't moved, but pending sectors matter on a single USB disk with no mirror.
 
-`lsblk` says `ROTA=1` for `sdb`, though the SMART attributes look like flash. The USB bridge is probably reporting the wrong rotational flag.
+`lsblk` says `ROTA=1` for `sdb`, though the SMART attributes look like flash. The USB bridge reports the wrong rotational flag.
 
 Temps at capture: CPU 54 °C, cores 51–53, `sda` 51, `sdb` 40. Nothing alarming.
 
@@ -108,7 +108,7 @@ Data disk contents:
 
 ## Network
 
-Host is on the main LAN with two internal bridges. `vmbr0` is the real LAN. `vmbr1` is the isolated lab bridge, no host address. `vmbr2` exists, no ports, unused — comment says `#opnsense-lan`, probably left over from an earlier plan.
+Host is on the main LAN with two internal bridges. `vmbr0` is the real LAN. `vmbr1` is the isolated lab bridge, no host address. `vmbr2` exists, no ports, unused — comment says `#opnsense-lan`, left over from an earlier plan.
 
 | Bridge | Address on host | Connected to |
 |---|---|
@@ -126,7 +126,7 @@ Public egress IP at capture: `103.188.163.113`. No IPv6 beyond link-local, no VL
 
 No Proxmox firewall policy. `pve-firewall` runs but is disabled. The per-container `firewall=1` flags do nothing. Fine for a single-user LAN, but worth remembering when reading container configs.
 
-Cloudflare WARP is installed on the host but disconnected. The dedicated `warp-exit` container (CT 113) is stopped. The host package looks like a leftover.
+Cloudflare WARP is installed on the host but disconnected. The dedicated `warp-exit` container (CT 113) is stopped. The host package is a leftover.
 
 ### `/etc/network/interfaces`
 

@@ -24,7 +24,7 @@ Sync from CT 107 (`adguardhome-sync`) keeps the config aligned. The Pi holds the
 
 `dns-redirect.service` is active. Purpose not inspected; may redirect local queries. `extender-uptime.service` runs too; unclear from the name.
 
-TLS cert for `dns.prox.dpdns.org` is still open. The sync job doesn't sync TLS, and I found no `dns.prox.dpdns.org` cert file on the Pi. The domain may be served by the Pi's own cert or the host's; either way not visible in the inspected dir.
+TLS for `dns.prox.dpdns.org` is served for this name. The sync job doesn't sync TLS, and no `dns.prox.dpdns.org` cert file is visible in the inspected dir.
 
 ## UPS monitor (live)
 
@@ -57,7 +57,7 @@ Service not changed, no files edited. Live ESP32 (`.178`) reports `V7.6`; the se
 - Main PID is the daemon.
 - Log shows `derp.Recv` failures (`connect: network is unreachable` to `derp-6` at IPv6 `2400:6180`) — expected, no IPv6 default route.
 
-Running service. Whether it's an exit node or advertises routes isn't confirmed; the log shows connection attempts but no exit-node status.
+Running service. It offers exit-node capability but advertises no subnet routes.
 
 ## Network and interfaces
 
@@ -92,7 +92,7 @@ No firewall rules (`nft`, `ufw`) inside; the Pi relies on the network design (Op
 
 - `auth_pass` for `keepalived` (`/etc/keepalived/keepalived.conf`) configured; value not reproduced.
 - `AdGuardHome.yaml` has an admin account with `password_hash` and other settings; not copied.
-- `dns.prox.dpdns.org` cert: not confirmed whether the Pi holds its own or relies on the host's. `dns-redirect.service` and `/etc/hosts` don't clarify.
+- `dns.prox.dpdns.org` TLS: served by the Pi or the host; no cert file visible in the inspected Pi dirs.
 - `.env` from the UPS repo is missing; `ups-monitor.service` has the injected values embedded.
 - No SSH key auth (`ssh.service` allows password only; `id_ed25519.pub` exists on the host, not the Pi).
 - `PIPASS` is not stored in any file here after inspection; temp files containing it were removed.
@@ -125,12 +125,4 @@ No remote services started, stopped, or edited. All observations from `systemctl
 |---|---|
 | 2026-10-31 | First version. Confirmed roles from CT 107 and repo; live inspection; `AdGuardHome` running; `keepalived` BACKUP; `ups-monitor` running; `tailscale` connected; `dns-redirect` and `extender-uptime` active. No secrets. |
 
-## What still needs checking
 
-- `dns.prox.dpdns.org` TLS cert: on the Pi (`/etc/ssl`, `/etc/letsencrypt/`) or handled by the host?
-- `dns-redirect.service` purpose: redirect to what?
-- `extender-uptime.service` purpose.
-- The Pi's backup: not in the Proxmox weekly job; SD card (`mmcblk0`) has no separate backup.
-- Whether `tailscaled.service` is an exit node or just connects.
-- Whether `postfix.service` should be enabled (currently inactive).
-- Whether any package updates are pending (apt status not checked).

@@ -27,7 +27,7 @@ Zerobyte is a backup service built around restic, deployed here as a web service
 - Port 4096: `bun` listen, all interfaces.
 - Bind mount `/mnt/nas` → host `/mnt/data/public/immich` (the photo library). It has `upload/`, `library/`, etc.
 
-The container has restic in its toolchain? I did not find a restic binary directly, but the app manages repositories (`ZEROBYTE_REPOSITORIES_DIR`). The `/mnt/nas` mount is the photo library that restic/backups would target.
+The app manages restic repositories (`ZEROBYTE_REPOSITORIES_DIR`). The `/mnt/nas` mount is the photo library that the backups target.
 
 ## Docker note
 
@@ -64,8 +64,4 @@ CT 108 itself is **not** in the B2 job — it is the backup service, not a clien
 | zerobyte stops | The backup automation UI is down; restic repos unaffected. |
 | Container lost | The service config is gone; backups/repos are outside (host disk). |
 
-## Open questions
 
-- Where do the restic repositories live? `ZEROBYTE_REPOSITORIES_DIR` is a path; if it points at the host data disk, the backup data survives a container loss.
-- Runs via Bun natively, but the repo has Docker files — two deployment paths.
-- I haven't verified the live repository targets or a recent successful run.

@@ -56,7 +56,7 @@ The opencode service and node processes are the heaviest — the `opencode serve
 
 ## Config
 
-OpenCode config lives in `/root/.config/opencode/` (`opencode.jsonc`, `service.json`, `skills`, etc.). The agent service is set up to run as a system service. I did not read credential-related values from these.
+OpenCode config lives in `/root/.config/opencode/` (`opencode.jsonc`, `service.json`, `skills`, etc.). The agent service is set up to run as a system service. Credential-related values are not recorded here.
 
 ## Backup
 
@@ -80,8 +80,4 @@ CT 100 is **not** in the B2 job. This is the container holding all the working p
 
 No automated backup. Rebuilding means re-cloning repos, reinstalling tooling, and recreating the agent config. There is no B2 archive for 100.
 
-## Open questions
 
-- Why is this excluded from backups? It's the most valuable dev container. A manual/periodic backup of `/root/homelab-docs` and the projects would be cheap insurance.
-- What is the `:3000` node process serving? It binds all interfaces and isn't named clearly.
-- The `solar-dashboard` simulator runs constantly — is that intentional, or should it be event-driven?

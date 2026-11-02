@@ -213,12 +213,4 @@ dig @192.168.0.147 -p 853 example.com +tls
 curl -kI https://192.168.0.147/
 ```
 
-## Open questions
-
-- The Pi's cert isn't visible from CT 107. How is it issued and renewed? Sync config doesn't list TLS.
-- Should keepalived check AdGuard rather than the interface? A dead AdGuard process would leave the VIP on the wrong node. Not changed.
-- Is the two-hour sync interval deliberate? It's the main limit on standby freshness.
-- The Pi also runs the UPS monitor. Design in [../services/ups.md](../services/ups.md); still need to check the live service when documenting the Pi.
-- Is `agh-backup` used by an update process, or left over?
-
 No files changed on the container. Everything came from `pct config`, `cat`, `systemctl status`, `ss`, `journalctl`, `openssl`, `acme.sh --list`, `nft list ruleset`, read-only file inspection.

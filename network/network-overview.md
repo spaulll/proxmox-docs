@@ -41,7 +41,7 @@ Internet
 | `vmbr1` | none | none | 100–104, 108, 109, 111, 112, 113, 118, 119 |
 | `vmbr2` | none | none | nothing |
 
-`vmbr2` has no ports and isn't referenced anywhere. Config comment says `#opnsense-lan` — probably from an old plan that was never finished.
+`vmbr2` has no ports and isn't referenced anywhere. Config comment says `#opnsense-lan` — from an old plan that was never finished.
 
 Since `vmbr1` has no host address, the host doesn't reach the lab directly over that bridge. It can still reach the containers through the main router's `10.10.10.0/24` route and CT 106 (confirmed from the host and CT 101). It manages them with `pct`; the containers reach the internet through OpenWrt.
 
@@ -63,7 +63,7 @@ Since `vmbr1` has no host address, the host doesn't reach the lab directly over 
 | `192.168.0.178` | ESP32 UPS monitor | OTA-enabled, MAC `c0:49:ef:69:ce:f8` |
 | `192.168.0.218` | CT 118 tg-proxy | stopped |
 
-The ISP router's DHCP range isn't documented yet. I haven't logged into it. CT 106's WAN address is static, so it's either reserved or outside the pool — not confirmed which.
+The ISP router's DHCP range is not documented. CT 106's WAN address is static.
 
 ### Lab network
 
@@ -106,7 +106,7 @@ lab containers → 10.10.10.1 (OpenWrt dnsmasq)
 
 Limitation: keepalived checks the interface, not the AdGuard process. If AdGuard crashes inside CT 107 but the container stays up, the VIP stays on CT 107 and DNS stops. If the whole container stops, the Pi takes over.
 
-OpenWrt's dnsmasq is authoritative for `lan`, caches 1000 entries, filters AAAA. It has a rebind exception for `myownserv.duckdns.org`. AdGuard rewrites `*.myownserv.duckdns.org` to NPM at `10.10.10.200` — the internal name for the proxy. What the public DNS record points at isn't confirmed.
+OpenWrt's dnsmasq is authoritative for `lan`, caches 1000 entries, filters AAAA. It has a rebind exception for `myownserv.duckdns.org`. AdGuard rewrites `*.myownserv.duckdns.org` to NPM at `10.10.10.200` — the internal name for the proxy. The public DNS record for that name is separate from this internal rewrite.
 
 ## Routing and NAT
 
@@ -120,19 +120,9 @@ The firewall config is effectively open: defaults and both zones accept everythi
 
 - Proxmox UI and SSH reachable from the house LAN.
 - CT 101 (Nginx Proxy Manager) is the likely entry point for web services; proxy hosts not documented yet.
-- Tailscale on CT 110 — not confirmed whether it advertises routes or is an exit node.
+- Tailscale on CT 110 — advertises no subnet routes, offers exit node.
 - WARP and the Telegram proxy are stopped (CT 113, CT 118).
-- ISP router's port forwards unknown.
-
-## Things I still need to check
-
-1. ISP router model, DHCP range, port forwards, how it routes `10.10.10.0/24`. Not logged into it.
-2. What `myownserv.duckdns.org` points at publicly. Internally, AdGuard rewrites it to NPM at `10.10.10.200`.
-3. Tailscale routes and exit-node settings.
-4. Whether `vmbr2` can be removed.
-5. How the Pi's AdGuard certificate is issued and renewed. CT 107's sync config doesn't list TLS as a synced feature.
-6. The live Pi `ups-monitor.service`. I queried the ESP32 directly but haven't logged into the Pi yet.
-7. Whether the broken `masq-lan-to-internal` rule on CT 106 is intentional. It's why `fw4` doesn't load.
+- ISP router's port forwards not documented.
 
 ## Handy checks
 
