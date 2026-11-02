@@ -2,24 +2,24 @@
 
 Individual container notes. One at a time, starting with what everything else depends on.
 
-**Status:** CT 107, 106, 101, 105 are done. CT 109 (Immich) is next. No container has been modified or started.
+**Status:** CT 107, 106, 101, 105, 109, 104, 100, 102, 119, 108, 111, 110 are done. Stopped CTs 112, 113, 118 are skipped. No container has been modified or started.
 
-## Order
+## Pages
 
 | Container | Why |
 |---|---|
-| [107 adguard](107-adguard.md) | DNS for the host and lab, done |
-| [106 openwrt](106-openwrt.md) | Router, DHCP, DNS forwarding for `10.10.10.0/24`, done |
-| [101 npm](101-npm.md) | Reverse proxy and SSL manager, done |
-| [105 NAS](105-nas.md) | Samba, NFS and the data disk, done |
-| 109 immich | Photos and the separate backup flow |
-| 104 jellyfin | Media and GPU passthrough |
-| 100 opencode | Development environment |
-| 102 journal | Journal application |
-| 119 monitoring | Docker monitoring stack |
-| 108 zerobyte | Restic backups |
-| 111 filebrowser | Web file browser |
-| 110 tailscale | Remote access |
+| [107 adguard](107-adguard.md) | DNS for the host and lab |
+| [106 openwrt](106-openwrt.md) | Router, DHCP, DNS forwarding |
+| [101 npm](101-npm.md) | Reverse proxy and SSL manager |
+| [105 NAS](105-nas.md) | Samba and the data disk |
+| [109 immich](109-immich.md) | Photos and the separate backup flow |
+| [104 jellyfin](104-jellyfin.md) | Media and GPU passthrough |
+| [100 opencode](100-opencode.md) | Development environment |
+| [102 journal](102-journal.md) | Journal application (SQLite) |
+| [119 monitoring](119-monitoring.md) | Docker monitoring / solar dashboard |
+| [108 zerobyte](108-zerobyte.md) | Restic backups (Zerobyte) |
+| [111 filebrowser](111-filebrowser.md) | Web file browser |
+| [110 tailscale](110-tailscale.md) | Remote access node |
 | 112, 113, 118 | Stopped, skipped at my request |
 
 ## What goes into each page
