@@ -2,7 +2,7 @@
 
 Individual container notes. One at a time, starting with what everything else depends on.
 
-**Status:** CT 107, 106, 101 are done. CT 105 (NAS) is next. No container has been modified or started.
+**Status:** CT 107, 106, 101, 105 are done. CT 109 (Immich) is next. No container has been modified or started.
 
 ## Order
 
@@ -11,8 +11,7 @@ Individual container notes. One at a time, starting with what everything else de
 | [107 adguard](107-adguard.md) | DNS for the host and lab, done |
 | [106 openwrt](106-openwrt.md) | Router, DHCP, DNS forwarding for `10.10.10.0/24`, done |
 | [101 npm](101-npm.md) | Reverse proxy and SSL manager, done |
-| 101 npm | Reverse proxy |
-| 105 NAS | Samba and the data disk |
+| [105 NAS](105-nas.md) | Samba, NFS and the data disk, done |
 | 109 immich | Photos and the separate backup flow |
 | 104 jellyfin | Media and GPU passthrough |
 | 100 opencode | Development environment |
