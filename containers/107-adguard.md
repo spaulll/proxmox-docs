@@ -33,7 +33,7 @@ At capture: up four days five hours. Memory 461 MB (peak 947 MB), 5 MB swap. The
 `pct config 107` only defines `192.168.0.146/24`. The `.147` address isn't in the Proxmox config. keepalived adds it to `eth0`.
 
 | Node | Real address | VRRP state | Priority |
-|---|---|---|
+|---|---|---|---|
 | CT 107 | `192.168.0.146` | MASTER | 100 |
 | Raspberry Pi | `192.168.0.169` | BACKUP | 50 |
 | Shared VIP | `192.168.0.147` | floats | — |
@@ -59,7 +59,7 @@ Limitation: keepalived only tracks the interface. No `vrrp_script` checks AdGuar
 Listening ports:
 
 | Port | Process | Use |
-|---:|---|---|
+|---|---|---|
 | 53/tcp, 53/udp | AdGuard Home | plain DNS |
 | 80/tcp | AdGuard Home | admin UI over HTTP |
 | 443/tcp | AdGuard Home | admin UI and DoH |

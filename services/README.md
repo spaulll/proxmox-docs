@@ -5,7 +5,7 @@ These pages describe capabilities that span more than one container. The per-con
 **Status:** all service pages written.
 
 | Page | Covers | Main guests |
-|---|---|
+|---|---|---|
 | [ups.md](ups.md) | ESP32/Pi UPS monitor, shutdown and wake path | Pi, ESP32, host |
 | [dns.md](dns.md) | AdGuard, OpenWrt dnsmasq, upstreams, filtering | 107, 106, Pi |
 | [reverse-proxy.md](reverse-proxy.md) | NPM hosts, certificates, upstreams | 101 |

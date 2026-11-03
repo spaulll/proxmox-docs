@@ -11,7 +11,7 @@ The first version inferred a power cut from network reachability — false alarm
 ## The pieces
 
 | Piece | Address | Role |
-|---|---|
+|---|---|---|
 | ESP32 | `192.168.0.178` | mains sensor, countdowns, shutdown and wake authority |
 | Raspberry Pi | `192.168.0.169` | event reconciler, notifications, Telegram commands |
 | Proxmox | `192.168.0.50` | the machine being protected |
@@ -32,7 +32,7 @@ Firmware uses `INPUT_PULLUP`, a 500 ms sample debounce, and a 3-second stability
 ## Timers and thresholds
 
 | Setting | Repo default | Live value on 2026-10-31 |
-|---|---:|---:|
+|---|---|---|
 | Mains shutdown delay | 5 min | 10 min |
 | WAN shutdown delay | 10 min | 10 min |
 | Mains stable time | 3 s | 3 s |
@@ -58,7 +58,7 @@ The Pi keeps a sequence ledger, so a webhook arriving twice doesn't produce two 
 ## Network and ports
 
 | From | To | Port | Purpose |
-|---|---|---|
+|---|---|---|---|
 | Pi | ESP32 | 80/tcp | `/state`, `/events`, `/command` |
 | ESP32 | Pi | 9997/tcp | `/notify` webhook, token-authenticated |
 | ESP32 | `prox` | 9999/tcp | shutdown request |

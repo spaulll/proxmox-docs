@@ -5,7 +5,7 @@ Quick reference for everything under `prox`. 16 LXC containers, no VMs. Thirteen
 The table is the summary. The notes add the details I usually need when working on one. Full pages go into `containers/` one at a time.
 
 | ID | Name | State | OS | vCPU | RAM | Disk | Address | Start order | Backed up |
-|---:|---|---|---|---:|---:|---:|---|---:|---|
+|---|---|---|---|---|---|---|---|---|---|
 | 100 | `opencode` | running | Debian | 3 | 6 GB | 20 GB | `10.10.10.162` (DHCP) | — | no |
 | 101 | `npm` | running | Debian | 1 | 512 MB | 4 GB | `10.10.10.200` (DHCP) | 1 | yes |
 | 102 | `journal` | running | Debian | 2 | 2 GB | 8 GB | `10.10.10.149` (DHCP) | — | no |
@@ -118,7 +118,7 @@ No startup order, not backed up — not ideal if it holds Grafana dashboards and
 ## Mounts from the host
 
 | Container | Host path | Path inside |
-|---:|---|---|
+|---|---|---|
 | 100 | `/mnt/data/public/Downloads` | `/mnt/nas` |
 | 103 | `/mnt/data/public/Downloads` | `/mnt/nas` |
 | 104 | `/mnt/data/public/Downloads` | `/mnt/smb` |

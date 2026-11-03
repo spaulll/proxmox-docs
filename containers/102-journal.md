@@ -32,7 +32,7 @@ Uptime 5 days 21 hours, load ~1.14, memory 147 MB of 2 GB. Disk 2.7/8 GB.
 Ports:
 
 | Port | Process | Use |
-|---:|---|---|
+|---|---|---|
 | 3000/tcp | node | frontend (SvelteKit) |
 | 8000/tcp | uvicorn | backend API |
 | 22/tcp | sshd | SSH |

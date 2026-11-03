@@ -37,7 +37,7 @@ It uses a SQLite DB `solar_data.db` and has a `frontend/` dir. Source in `/root/
 Ports:
 
 | Port | Process | Use |
-|---:|---|---|
+|---|---|---|
 | 8000/tcp | uvicorn | solar dashboard |
 | 22/tcp | sshd | SSH |
 | 25/tcp | postfix | localhost |

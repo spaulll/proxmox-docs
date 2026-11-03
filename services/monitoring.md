@@ -5,7 +5,7 @@ This covers the "monitoring" container. Short version: there is no Prometheus/Gr
 ## What exists
 
 | Asset | Location | State |
-|---|---|
+|---|---|---|
 | Solar dashboard + monitoring | CT 119 (`10.10.10.246`, `:8000`) | running (uvicorn) — canonical/prod |
 | Solar dashboard copy | CT 100 (`:8010`) | running — test only |
 | Docker host | CT 119 | Docker engine up, **zero containers/images** |

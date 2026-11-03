@@ -38,7 +38,7 @@ Everything here was recorded by logging into each box and reading its config —
 ### Disks
 
 | Device | Drive | Size | Role |
-|---|---|---|
+|---|---|---|---|
 | `/dev/sda` | Crucial CT240BX500SSD1 | 223.6 GB | boot, LVM, all container root filesystems |
 | `/dev/sdb` | Matrix 512GB | 476.9 GB | `/mnt/data`, USB-attached (JMicron bridge) |
 | `/dev/zram0` | — | 3.9 GB | compressed swap |
@@ -75,7 +75,7 @@ Internet
 ### Bridges
 
 | Bridge | Host address | Uplink | Used by |
-|---|---|---|
+|---|---|---|---|
 | `vmbr0` | `192.168.0.50/24` | `eno1` | 105, 106, 107, 110, 118 |
 | `vmbr1` | none | none | lab containers (100–104, 108, 109, 111, 112, 113, 118, 119) |
 | `vmbr2` | none | none | unused (leftover `#opnsense-lan` plan) |
@@ -85,7 +85,7 @@ The lab is routed, not NATed. The main router carries `10.10.10.0/24` back to `1
 ### Key addresses
 
 | Address | Device | Role |
-|---|---|
+|---|---|---|
 | `192.168.0.1` | Asus AX53u | router, DHCP 10–200, static route, no port forwards |
 | `192.168.0.50` | prox | host UI/SSH |
 | `192.168.0.146` / `.147` | CT 107 / VIP | AdGuard MASTER / keepalived VIP |

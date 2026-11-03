@@ -37,7 +37,7 @@ CPU 4 cores, 6 GB RAM. At inspection: load 1.08, ~855 MB used of 6 GB. Disk 7.5/
 Ports:
 
 | Port | Process | Use |
-|---:|---|---|
+|---|---|---|
 | 2283/tcp | immich-api | main UI + API |
 | 3003/tcp | immich-ml | machine-learning |
 | 5432/tcp | postgres | localhost only |

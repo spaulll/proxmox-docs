@@ -36,7 +36,7 @@ Internet
 ## Bridges on the Proxmox host
 
 | Bridge | Host address | Uplink | Used by |
-|---|---|---|
+|---|---|---|---|
 | `vmbr0` | `192.168.0.50/24` | `eno1` | 105, 106, 107, 110, 118 |
 | `vmbr1` | none | none | 100–104, 108, 109, 111, 112, 113, 118, 119 |
 | `vmbr2` | none | none | nothing |
@@ -50,7 +50,7 @@ Since `vmbr1` has no host address, the host doesn't reach the lab directly over 
 ### House LAN
 
 | Address | Device | Notes |
-|---|---|
+|---|---|---|
 | `192.168.0.1` | Asus AX53u | gateway, DHCP 10–200, NAT, static route `10.10.10.0/24` → `192.168.0.150`, no port forwards |
 | `192.168.0.5` | CT 110 tailscale | remote access |
 | `192.168.0.10` | CT 105 NAS | Samba |
@@ -70,7 +70,7 @@ The ISP router is an Asus RT-AX53U. DHCP hands out `192.168.0.10–.200`. No por
 OpenWrt serves DHCP from `.100` to `.249`, 12-hour lease. No static reservations in dnsmasq, even though several containers have static addresses in that range.
 
 | Address | Container | How |
-|---|---|
+|---|---|---|
 | `10.10.10.1` | CT 106 openwrt | static, gateway and DNS |
 | `10.10.10.135` | CT 113 warp-exit | static, stopped |
 | `10.10.10.144` | CT 111 filebrowser | DHCP |

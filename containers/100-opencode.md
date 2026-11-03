@@ -31,7 +31,7 @@ This is the coding-agent host. It nests — that's why `nesting=1` and `keyctl=1
 Ports listening:
 
 | Port | Process | Use |
-|---:|---|---|
+|---|---|---|
 | 3000/tcp | node (build) | a leftover dev server, no real purpose |
 | 8010/tcp | uvicorn/py | local app, loopback only |
 | 22/tcp | sshd | SSH |

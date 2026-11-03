@@ -44,7 +44,7 @@ The `jellyfin` user is in groups `44(video)` and `993(render)`, so it can use th
 ## Ports
 
 | Port | Service | Use |
-|---:|---|---|
+|---|---|---|
 | 8096/tcp | jellyfin | web UI + API |
 | 8920/tcp | jellyfin | HTTPS (if enabled) |
 | 7359/udp | jellyfin | auto-discovery |

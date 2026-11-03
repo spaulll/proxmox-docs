@@ -27,7 +27,7 @@ OpenWrt runs as an unmanaged container, so Proxmox doesn't use its normal OS int
 ## Network
 
 | Interface | Bridge | Address | Notes |
-|---|---|---|
+|---|---|---|---|
 | `eth0` | `vmbr0` | `192.168.0.150/24` | static WAN, MAC `bc:24:11:f4:cb:85` |
 | `eth1` | `vmbr1` | `10.10.10.1/24` | lab gateway, MAC `bc:24:11:f6:b7:48` |
 
@@ -95,7 +95,7 @@ Left the broken firewall rule alone. Recorded as-is, not as a hardening task.
 No static reservations in dnsmasq. Active leases at capture:
 
 | Address | Name | MAC |
-|---|---|
+|---|---|---|
 | `10.10.10.144` | filebrowser | `bc:24:11:45:c4:40` |
 | `10.10.10.149` | journal | `bc:24:11:64:d3:81` |
 | `10.10.10.162` | opencode | `bc:24:11:b9:f6:98` |
@@ -113,7 +113,7 @@ DNS works as expected. `openwrt.lan` resolves to `10.10.10.1`; `example.com` for
 ## What runs inside
 
 | Service | Port | What it does |
-|---|---:|---|
+|---|---|---|
 | `dnsmasq` | 53/tcp, 53/udp | DNS forwarder for the lab and WAN side |
 | `dnsmasq` | 67/udp | DHCP for `10.10.10.0/24` |
 | `odhcpd` | 547/udp | DHCPv6 and router advertisements |

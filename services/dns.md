@@ -17,7 +17,7 @@ lab containers → 10.10.10.1 (OpenWrt dnsmasq)
 Two nodes share the VIP `192.168.0.147`:
 
 | Node | Real address | VRRP state | Priority |
-|---|---|---|
+|---|---|---|---|
 | CT 107 (AdGuard) | `192.168.0.146` | MASTER | 100 |
 | Raspberry Pi | `192.168.0.169` | BACKUP | 50 |
 

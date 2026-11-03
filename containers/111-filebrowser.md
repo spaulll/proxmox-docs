@@ -39,7 +39,7 @@ So the browser sees the full data disk as `/mnt/smb`.
 ## Ports
 
 | Port | Process | Use |
-|---:|---|---|
+|---|---|---|
 | 8080/tcp | filebrowser | web UI |
 | 22/tcp | sshd | SSH |
 | 25 | postfix | localhost |

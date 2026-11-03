@@ -36,7 +36,7 @@ There's a `compose.yaml` and `Dockerfile` in the repo, but **no Docker is runnin
 ## Ports
 
 | Port | Process | Use |
-|---:|---|---|
+|---|---|---|
 | 4096/tcp | bun | Zerobyte web UI/API |
 | 22/tcp | sshd | SSH |
 | 25 | postfix | localhost |

@@ -37,7 +37,7 @@ Lenovo ThinkCentre M900, type `10FM0022US`, serial `MJ04QE4U`. Small desktop, on
 ### Disks
 
 | Device | Model | Size | Used for |
-|---|---|---|
+|---|---|---|---|
 | `/dev/sda` | Crucial CT240BX500SSD1 | 223.6 GB | Proxmox boot, LVM, all container root filesystems |
 | `/dev/sdb` | Matrix 512GB | 476.9 GB | `/mnt/data`, USB via JMicron bridge |
 | `/dev/zram0` | zram | 3.9 GB | compressed swap |
@@ -88,7 +88,7 @@ Thin pool: 66 % data, 3.4 % metadata. ~16 GB unallocated in the VG. 122 GB root 
 Space at capture:
 
 | Mount | Size | Used | Free |
-|---|---:|---:|---:|
+|---|---|---|---|
 | `/` | 65 GB | 40 GB (65 %) | 22 GB |
 | `/mnt/data` | 469 GB | 305 GB (69 %) | 140 GB |
 | `/boot/efi` | 1 GB | 9 MB | 1 GB |
@@ -98,7 +98,7 @@ Root is the tightest part. Most usage is `/var/lib/vz` (24 GB): 11 GB ISOs/templ
 Data disk contents:
 
 | Path | Size | Notes |
-|---|---:|---|
+|---|---|---|
 | `/mnt/data/public/Downloads` | 224 GB | media library and downloads |
 | `/mnt/data/public/immich` | 55 GB | Immich photo library |
 | `/mnt/data/public/backups` | 21 GB | 5 GB B2 staging + 16 GB Windows VM dump (May) |
@@ -111,7 +111,7 @@ Data disk contents:
 Host is on the main LAN with two internal bridges. `vmbr0` is the real LAN. `vmbr1` is the isolated lab bridge, no host address. `vmbr2` exists, no ports, unused — comment says `#opnsense-lan`, left over from an earlier plan.
 
 | Bridge | Address on host | Connected to |
-|---|---|
+|---|---|---|
 | `vmbr0` | `192.168.0.50/24` | `eno1`, physical LAN |
 | `vmbr1` | none | internal `10.10.10.0/24` |
 | `vmbr2` | none | nothing |

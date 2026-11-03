@@ -30,7 +30,7 @@ So the live config matches the owner's intent: this node is both a subnet router
 ## Ports
 
 | Port | Process | Use |
-|---:|---|---|
+|---|---|---|
 | 41641/udp | tailscaled | WireGuard (Tailscale) |
 
 ## Backup

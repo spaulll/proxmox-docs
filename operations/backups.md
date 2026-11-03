@@ -19,7 +19,7 @@ To add a container, just add its CT ID to the `CTIDS` array in `lxc-backup-b2.sh
 ## What is covered
 
 | Container | Archive size on 2026-10-25 |
-|---|---:|
+|---|---|
 | CT 107 adguard | 330 MB |
 | CT 101 npm | 597 MB |
 | CT 106 openwrt | 9 MB |
@@ -42,7 +42,7 @@ excluding bind mount point mp0 ('/mnt/nas') from backup (not a volume)
 So these are outside every container backup:
 
 | Data | Where | Protection |
-|---|---|
+|---|---|---|
 | Media and downloads | `/mnt/data/public/Downloads` | none, but mostly replaceable |
 | Immich library | `/mnt/data/public/immich` | backed up by Zerobyte |
 | Private files | `/mnt/data/private` | none — holds no important data, intentionally unbacked |
