@@ -25,12 +25,12 @@ Two mechanisms:
 | Data | Where | Notes |
 |---|---|---|
 | Media library | `/mnt/data/public/Downloads` | ~225 GB, treated as replaceable |
-| Private files | `/mnt/data/private` | no copy found |
+| Private files | `/mnt/data/private` | no copy; holds no important data, intentionally unbacked |
 | Dev/code projects | CT 100 | intentionally not backed up |
 | Journal DB (SQLite) | CT 102 | intentionally not backed up |
 | Jellyfin config | CT 104 | intentionally not backed up |
 | Solar dashboard DB | CT 119 | intentionally not backed up (solar only) |
-| Windows VM dump | `/mnt/data/public/backups/win10-vm.vma.zst` | 16 GB, local only (May) |
+| Windows VM dump | `/mnt/data/public/backups/win10-vm.vma.zst` | 16 GB, kept deliberately (archive of an old VM) |
 
 ## The bind-mount gap
 

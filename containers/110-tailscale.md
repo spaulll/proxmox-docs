@@ -22,11 +22,10 @@ Uptime 5 days 21 hours, load ~0.73, memory ~40 MB of 512 MB.
 
 `tailscaled.service` runs; node name `tailscale-lxc` with tailnet IP `100.64.149.36` (`tailscale0` interface, mtu 1280). Logged-in account `djspaul99@`.
 
-- **ExitNode**: false, but `ExitNodeOption: true` — this node *offers* to be an exit node, it doesn't use one.
-- **AdvertiseRoutes**: empty (from prefs) — it is not advertising subnet routes.
-- **AcceptRoutes/RouteAll**: false.
+- **AdvertiseRoutes** (verified 2026-11-03): `0.0.0.0/0`, `::/0`, `10.10.10.0/24`, `192.168.0.0/24`.
+- **ExitNode/ExitNodeIP**: empty — this node doesn't consume another exit node, but advertising `0.0.0.0/0` + `::/0` is what makes it *offer* to be an exit node.
 
-So: this is a Tailscale member that offers exit-node capability but isn't currently advertising subnets. The other tailnet members are mostly offline (phone/devices).
+So the live config matches the owner's intent: this node is both a subnet router (advertising both LANs) and an exit node (home IP as source when connecting from outside). This is the main exit path. The other tailnet members are mostly offline (phone/devices/`warp-exit`) and each has its own use case; only this node and the Pi are online.
 
 ## Ports
 

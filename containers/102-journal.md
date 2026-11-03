@@ -54,7 +54,7 @@ The DB is SQLite, stored in the backend data dir — inside the container rootfs
 
 ## Backup
 
-CT 102 is **not** in the B2 job. The app, its code, and the SQLite journal DB are not backed up by the weekly job.
+CT 102 is **not** in the B2 job — a deliberate exclusion. The app, its code, and the SQLite journal DB are not backed up by the weekly job.
 
 ## Health
 

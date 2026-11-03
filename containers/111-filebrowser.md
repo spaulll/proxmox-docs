@@ -27,12 +27,12 @@ Config (`fq-config.yaml`) highlights:
 - Server port 8080, source root `/mnt/smb` named "NAS"
 - Indexing every 240 minutes, `denyByDefault: false`
 - `neverWatchPath` excludes system/proc paths
-- Auth: `noauth: false` — login required (users/passwords not shown)
+- Auth: `noauth: false` — login required; users come from FileBrowser's own user database (users/passwords not shown)
 
 ## Mounts
 
 - `/mnt/smb` → host `/mnt/data` (the whole data disk). Contains `public/`, `private/`, `lost+found`.
-- `/usr/local/community-scripts/tmp` → same disk (`/mnt/data/public/.filebrowser-tmp`), a small upload staging area.
+- `/usr/local/community-scripts/tmp` → same disk (`/mnt/data/public/.filebrowser-tmp`), a deliberate upload staging area.
 
 So the browser sees the full data disk as `/mnt/smb`.
 

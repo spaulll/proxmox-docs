@@ -26,11 +26,11 @@ Uptime 5 days 21 hours, load ~0.96, memory 337 MB of 2 GB.
 | `solar-dashboard.service` | uvicorn app on 8000 |
 | `sshd`, `cron`, `postfix` | standard |
 
-The Docker engine is up, but `docker ps -a` and `docker images` are empty — no containers or images currently. `docker compose` finds no projects. So the "monitoring stack" tag is aspirational; nothing's actually deployed under Docker right now.
+The Docker engine is up, but `docker ps -a` and `docker images` are empty — no containers or images currently. `docker compose` finds no projects. The empty Docker is intended (reserved for future use), not just leftover.
 
 ## Solar dashboard
 
-The active service is `solar-dashboard.service`: a uvicorn app (`/root/solar-dashboard/venv/bin/uvicorn main:app`) listening on 8000, with `--proxy-headers --forwarded-allow-ips=10.10.10.200` (i.e. behind NPM at the proxy address).
+The active service is `solar-dashboard.service`: a uvicorn app (`/root/solar-dashboard/venv/bin/uvicorn main:app`) listening on 8000, with `--proxy-headers --forwarded-allow-ips=10.10.10.200` (i.e. behind NPM at the proxy address). CT 119 is the canonical/prod dashboard; the copy in CT 100 is test-only.
 
 It uses a SQLite DB `solar_data.db` and has a `frontend/` dir. Source in `/root/solar-dashboard` — `main.py`, `solar.py`, `inverter.py`, `config.py`, `database.py`.
 

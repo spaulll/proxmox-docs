@@ -47,7 +47,7 @@ Postgres and Redis bind to localhost only. The API and ML listen on all interfac
 
 ## Machine learning
 
-`immich-ml` runs as `python -m gunicorn immich_ml.main:app` on port 3003, model revision `v2`. The ML cache folder is `/opt/immich/cache`. GPU passthrough is present (`/dev/dri/card1`, `renderD128`) — used for ML inference if configured. The env sets `MACHINE_LEARNING_URL=http://127.0.0.1:3003`, and the model revision is explicitly pinned to `v2`.
+`immich-ml` runs as `python -m gunicorn immich_ml.main:app` on port 3003, model revision `v2`. The ML cache folder is `/opt/immich/cache`. GPU passthrough is present (`/dev/dri/card1`, `renderD128`) but ML runs on CPU (confirmed) — the GPU isn't used for inference. The env sets `MACHINE_LEARNING_URL=http://127.0.0.1:3003`, and the model revision is explicitly pinned to `v2`.
 
 ## Storage and data
 

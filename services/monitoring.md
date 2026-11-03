@@ -6,15 +6,15 @@ This covers the "monitoring" container. Short version: there is no Prometheus/Gr
 
 | Asset | Location | State |
 |---|---|
-| Solar dashboard + monitoring | CT 119 (`10.10.10.246`, `:8000`) | running (uvicorn) |
-| Solar dashboard copy | CT 100 (`:8010`) | running |
+| Solar dashboard + monitoring | CT 119 (`10.10.10.246`, `:8000`) | running (uvicorn) — canonical/prod |
+| Solar dashboard copy | CT 100 (`:8010`) | running — test only |
 | Docker host | CT 119 | Docker engine up, **zero containers/images** |
 | Prometheus/Grafana | — | absent |
 
 ## Solar dashboard
 
-- Runs on CT 119 (`solar-dashboard.service`, uvicorn on 8000, behind NPM via `--forwarded-allow-ips=10.10.10.200`).
-- Also a `solar-dashboard` in CT 100 (uvicorn on 8010) plus a `simulate_inverter.py` process.
+- Runs on CT 119 (`solar-dashboard.service`, uvicorn on 8000, behind NPM via `--forwarded-allow-ips=10.10.10.200`). CT 119 is the canonical instance.
+- A `solar-dashboard` copy also runs in CT 100 (uvicorn on 8010) for testing; it is not the prod one.
 - Uses SQLite `solar_data.db`.
 
 ## Not present

@@ -22,7 +22,7 @@ I had the WAN side recorded as DHCP in the inventory. That was wrong. `pct confi
 
 OpenWrt runs as an unmanaged container, so Proxmox doesn't use its normal OS integration. `pct exec` works fine. One quirk inside: `free` shows the host's 16 GB of memory and swap because `/proc/meminfo` is the host's. The PVE limit is still enforced by the cgroup. On the host, `/sys/fs/cgroup/lxc/106/memory.max` is 268435456 bytes (256 MB); current usage ~13 MB. Root filesystem almost empty.
 
-`/dev/net/tun` is passed through, but there's no Tailscale, WireGuard, OpenVPN, or ZeroTier package or process inside. Looks like a leftover from an earlier setup.
+`/dev/net/tun` is passed through, but there's no Tailscale, WireGuard, OpenVPN, or ZeroTier package or process inside. Looks like a leftover from an earlier setup; kept as-is.
 
 ## Network
 
@@ -70,7 +70,7 @@ Net result: CT 106 does **not** NAT the lab. It's a routed subnet. The main rout
 - from CT 101, `traceroute 1.1.1.1` goes `10.10.10.1` then `192.168.0.1`
 - from `prox`, a ping to `10.10.10.200` works, and a capture on `vmbr0` shows source `10.10.10.200`, reply straight back
 
-At capture the host even had a cached redirect sending `10.10.10.200` via `192.168.0.150`. Didn't log into the ISP router to see the route, but the path is clear.
+At capture the host even had a cached redirect sending `10.10.10.200` via `192.168.0.150`. The route is a deliberate static entry on the ISP router, pointing at `192.168.0.150` (owner-confirmed).
 
 So one NAT layer, on the ISP router, not two. An inbound port forward to a lab container only needs a rule on the main router. CT 106 just forwards. Main router rules not documented.
 
@@ -125,7 +125,7 @@ DNS works as expected. `openwrt.lan` resolves to `10.10.10.1`; `example.com` for
 
 `uhttpd` serves LuCI on HTTP and HTTPS. `luci-ssl` installed; cert is the local one in `/etc/uhttpd.crt`. `redirect_https` off, so both ports stay open. Dropbear allows root password login on 22. Consistent with the rest of the setup.
 
-NTP disabled in `/etc/config/system`. `sysntpd` init script is linked in `/etc/rc.d`, but no NTP process runs; the container takes time from the host kernel. Cron is linked too, but no `crond` process and root's crontab is empty — no scheduled jobs.
+NTP disabled in `/etc/config/system` — deliberate, since the container takes time from the host kernel. `sysntpd` init script is linked in `/etc/rc.d`, but no NTP process runs. Cron is linked too, but no `crond` process and root's crontab is empty — no scheduled jobs.
 
 138 opkg packages. Versions: `dnsmasq 2.90-r4`, `firewall4 2024.12.18~18fc0ead-r1`, `dropbear 2024.86-r1`, `uhttpd 2025.07.06~7e64e8ba-r4`, `odhcpd-ipv6only 2025.10.02~b14cf98c-r1`, `nlbwmon 2024.02.21~c7616bcf-r1`, LuCI `25.292.66247~75e41cb`.
 

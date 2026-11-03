@@ -39,7 +39,7 @@ Intel GPU passed through:
 - `/dev/dri/card1` (gid 44, video)
 - `/dev/dri/renderD128` (gid 993, render)
 
-The `jellyfin` user is in groups `44(video)` and `993(render)`, so it can use the GPU. ffmpeg8 is the active transcoder. QSV should be available (i5-6500T supports Quick Sync).
+The `jellyfin` user is in groups `44(video)` and `993(render)`, so it can use the GPU. ffmpeg8 is the active transcoder. QSV transcoding is confirmed working on the i5-6500T — not falling back to CPU.
 
 ## Ports
 
@@ -58,7 +58,7 @@ Only 8096 was listening at inspection.
 | `jellyfin.service` | the media server |
 | `sshd` | SSH |
 
-Nothing else of note. The systemd drop-in `/etc/systemd/system/jellyfin.service.d/jellyfin.service.conf` is entirely commented out — default hardening, no custom overrides.
+Nothing else of note.
 
 ## Backup
 

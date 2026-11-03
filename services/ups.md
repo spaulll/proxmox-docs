@@ -41,7 +41,7 @@ Firmware uses `INPUT_PULLUP`, a 500 ms sample debounce, and a 3-second stability
 | Re-WOL after | 120 s, max 5 tries | 120 s, max 5 tries |
 | Shutdown webhook retry | 6 tries, 10 s apart | 6 tries, 10 s apart |
 
-Live mains delay is 600000 ms — changed from the 5-minute default. Telegram command `/mainsdelay` sets it between 1 and 720 minutes. `/wantimeout` handles the WAN timer.
+Live mains delay is 600000 ms — changed from the 5-minute default, and deliberate (not a drift). Telegram command `/mainsdelay` sets it between 1 and 720 minutes. `/wantimeout` handles the WAN timer. The Pi's copy of the monitor code matches the repo's current revision; the shutdown webhook script is unchanged from the repo snapshot.
 
 WAN check is a TCP connection to `8.8.8.8:53` or `1.1.1.1:53` every 15 s. One failed poll isn't enough; the firmware needs sustained failure before the WAN countdown starts.
 

@@ -6,7 +6,7 @@ Immich, self-hosted photo server. The photo library is the most valuable non-rep
 
 - CT 109 (Immich `v3.3.5`, native install, no Docker) at `10.10.10.234:2283`.
 - PostgreSQL 16 (localhost), Redis (localhost), machine-learning on 3003.
-- GPU passthrough present (`/dev/dri/card1`, `renderD128`).
+- GPU passthrough present (`/dev/dri/card1`, `renderD128`) but ML runs on CPU (confirmed); the GPU isn't used for ML.
 - See [containers/109-immich.md](../containers/109-immich.md).
 
 ## Library location

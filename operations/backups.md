@@ -9,9 +9,11 @@ Last successful run: 2026-10-25, ~40 minutes. The next one is Sunday at 03:00.
 - `lxc-backup-b2.sh` runs from root's crontab every Sunday at 03:00.
 - Dumps seven containers with `vzdump --mode snapshot --compress zstd`.
 - Each archive is tested with `zstd -t` before upload.
-- Uploads go to `b2lxccrypt:prox-lxc-backups/<container>/`.
+- Uploads go to `b2lxccrypt:prox-lxc-backups/<lxc-hostname>/`.
+
+To add a container, just add its CT ID to the `CTIDS` array in `lxc-backup-b2.sh`. Everything else — the hostname prefix, the B2 folder, the Telegram label — is read from the container itself.
 - Only one archive per container is kept in B2. Old ones are deleted after the new upload succeeds.
-- A Telegram message reports success or failure.
+- A Telegram message reports success or failure. The script sends one message at the start and edits it live as each container finishes, so you can watch progress (bar, elapsed time, per-container state) → the run. The final edit is the summary.
 - If a run is interrupted, the state file lets it resume at boot or on the next cron run.
 
 ## What is covered
@@ -43,11 +45,11 @@ So these are outside every container backup:
 |---|---|
 | Media and downloads | `/mnt/data/public/Downloads` | none, but mostly replaceable |
 | Immich library | `/mnt/data/public/immich` | backed up by Zerobyte |
-| Private files | `/mnt/data/private` | none found |
+| Private files | `/mnt/data/private` | none — holds no important data, intentionally unbacked |
 | Syncthing data | `/mnt/data/public/syncthing` | none found |
-| Windows VM dump | `/mnt/data/public/backups/win10-vm.vma.zst` | local only, from May |
+| Windows VM dump | `/mnt/data/public/backups/win10-vm.vma.zst` | local only, from May — kept deliberately (archive of an old VM) |
 
-The private directory is the one I'd want a second copy of.
+`/mnt/data/private` is the one path with no copy. Reviewed 2026-11-03: it holds no important data, so it's intentionally left unbacked.
 
 ## How the script works
 
@@ -58,7 +60,7 @@ The private directory is the one I'd want a second copy of.
    - remove the previous local dump;
    - run `vzdump` into `/mnt/data/public/backups/lxc`;
    - test with `zstd -t`;
-   - rename to `<name>-<id>-<timestamp>.tar.zst`;
+   - rename to `<lxc-hostname>-<id>-<timestamp>.tar.zst`;
    - upload to B2;
    - only after a successful upload, delete older copies for that container.
 4. Clean up old hidden versions in the bucket.
@@ -66,7 +68,7 @@ The private directory is the one I'd want a second copy of.
 
 The state file matters. If the host reboots mid-run, `lxc-backup-resume.service` waits 45 seconds after boot and runs the script again, retrying only pending containers.
 
-Logs: `/var/log/lxc-backup-b2.log`. Truncated at the start of each run, so it only holds the most recent one. The staging directory keeps current archives plus a lot of old `.log` files from previous runs.
+Logs: `/var/log/lxc-backup-b2.log`. Truncated at the start of each run, so it only holds the most recent one. `vzdump` writes its own `.log` into the staging directory; the script now removes those, so staging holds only the current archives.
 
 ## The last run
 
@@ -83,7 +85,7 @@ The bucket got smaller because old copies and hidden versions were cleaned up af
 
 ## Restoring
 
-Restoring is a `pct restore` away, but bind mounts aren't in the archive, so a full recovery is two steps: the container, then the data.
+Restoring is a `pct restore` away, but bind mounts aren't in the archive, so a full recovery is two steps: the container, then the data. A test restore was performed 2026-11-03 and verified working.
 
 Find the archive:
 
@@ -129,9 +131,9 @@ Old material on the disks:
 
 - `/var/lib/vz/dump` — 14 GB of old dumps, including two CT 109 archives (5.7 GB and 6.4 GB).
 - `/mnt/data/public/backups/win10-vm.vma.zst` — 16 GB Windows VM dump from May. No Windows VM on the host now.
-- Backup staging — 153 old `vzdump-*.log` files, because the cleanup pattern doesn't match them.
+The backup staging dir had 160 leftover `vzdump-*.log` files from older runs — the cleanup pattern never matched them. I cleared those and fixed the script so it removes each `.log` as it goes. Staging now holds only the current archives.
 
-None deleted. If the Windows VM is really gone, that file alone frees 16 GB on the data disk. The old dumps free ~13 GB on root.
+Still not deleted: the Windows VM image (16 GB, kept deliberately) and the old dumps (~13 GB on root, still cleanup candidates).
 
 ## Commands I use
 

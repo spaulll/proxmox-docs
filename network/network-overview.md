@@ -43,7 +43,7 @@ Internet
 
 `vmbr2` has no ports and isn't referenced anywhere. Config comment says `#opnsense-lan` — from an old plan that was never finished.
 
-Since `vmbr1` has no host address, the host doesn't reach the lab directly over that bridge. It can still reach the containers through the main router's `10.10.10.0/24` route and CT 106 (confirmed from the host and CT 101). It manages them with `pct`; the containers reach the internet through OpenWrt.
+Since `vmbr1` has no host address, the host doesn't reach the lab directly over that bridge. It can still reach the containers through the main router's `10.10.10.0/24` route and CT 106 (confirmed from the host and CT 101). That route is a deliberate static entry on the router, pointing at `192.168.0.150`. It manages them with `pct`; the containers reach the internet through OpenWrt.
 
 ## Addresses
 
@@ -51,7 +51,7 @@ Since `vmbr1` has no host address, the host doesn't reach the lab directly over 
 
 | Address | Device | Notes |
 |---|---|
-| `192.168.0.1` | ISP router | gateway, DHCP, NAT, return route to `10.10.10.0/24` (inferred), whatever port forwarding exists |
+| `192.168.0.1` | Asus AX53u | gateway, DHCP 10–200, NAT, static route `10.10.10.0/24` → `192.168.0.150`, no port forwards |
 | `192.168.0.5` | CT 110 tailscale | remote access |
 | `192.168.0.10` | CT 105 NAS | Samba |
 | `192.168.0.50` | prox | web UI and SSH |
@@ -63,7 +63,7 @@ Since `vmbr1` has no host address, the host doesn't reach the lab directly over 
 | `192.168.0.178` | ESP32 UPS monitor | OTA-enabled, MAC `c0:49:ef:69:ce:f8` |
 | `192.168.0.218` | CT 118 tg-proxy | stopped |
 
-The ISP router's DHCP range is not documented. CT 106's WAN address is static.
+The ISP router is an Asus RT-AX53U. DHCP hands out `192.168.0.10–.200`. No port forwards are configured. CT 106's WAN address is static.
 
 ### Lab network
 
@@ -106,23 +106,24 @@ lab containers → 10.10.10.1 (OpenWrt dnsmasq)
 
 Limitation: keepalived checks the interface, not the AdGuard process. If AdGuard crashes inside CT 107 but the container stays up, the VIP stays on CT 107 and DNS stops. If the whole container stops, the Pi takes over.
 
-OpenWrt's dnsmasq is authoritative for `lan`, caches 1000 entries, filters AAAA. It has a rebind exception for `myownserv.duckdns.org`. AdGuard rewrites `*.myownserv.duckdns.org` to NPM at `10.10.10.200` — the internal name for the proxy. The public DNS record for that name is separate from this internal rewrite.
+OpenWrt's dnsmasq is authoritative for `lan`, caches 1000 entries, filters AAAA. It has a rebind exception for `myownserv.duckdns.org`. AdGuard rewrites `*.myownserv.duckdns.org` to NPM at `10.10.10.200` — the internal name for the proxy. `myownserv.duckdns.org` is LAN-only: it has no public records, is managed entirely by NPM locally, and is only reachable by LAN clients.
 
 ## Routing and NAT
 
 The host uses `192.168.0.1` as its default gateway. Lab containers use `10.10.10.1`. CT 106 routes between the two subnets but doesn't NAT. Its `fw4` config fails to load; `nft list ruleset` is empty. The main router has a return route for `10.10.10.0/24` via `192.168.0.150`, so lab traffic keeps its `10.10.10.x` source address all the way out. Confirmed with a ping from CT 101 and a capture on `vmbr0` — source was still `10.10.10.200`.
 
-So there's one NAT layer, on the ISP router, not two. Inbound forwarding to a lab container needs a port forward on the ISP router to the container's `10.10.10.x` address. CT 106 only forwards; it doesn't translate. ISP router rules not documented yet.
+So there's one NAT layer, on the ISP router, not two. Inbound forwarding to a lab container needs a port forward on the ISP router to the container's `10.10.10.x` address. CT 106 only forwards; it doesn't translate. The ISP router has no port forwards configured.
 
-The firewall config is effectively open: defaults and both zones accept everything, WAN-to-LAN forwarding enabled. The custom `masq-lan-to-internal` rule is what breaks `fw4` — it jumps to a chain `fw4` doesn't create. Left alone. Exact error on the CT 106 page.
+The firewall config is effectively open: defaults and both zones accept everything, WAN-to-LAN forwarding enabled. The custom `masq-lan-to-internal` rule is what breaks `fw4` — it jumps to a chain `fw4` doesn't create. Left alone by decision. Exact error on the CT 106 page.
 
 ## What is exposed
 
 - Proxmox UI and SSH reachable from the house LAN.
 - CT 101 (Nginx Proxy Manager) is the likely entry point for web services; proxy hosts not documented yet.
-- Tailscale on CT 110 — advertises no subnet routes, offers exit node.
+- Tailscale on CT 110 — verified as a subnet router + exit node (advertises `10.10.10.0/24`, `192.168.0.0/24`, and `0.0.0.0/0`/`::/0`), so the home IP shows as source when away.
+- The Pi also runs Tailscale as an exit node — emergency fallback when `prox` is down (Pi runs on UPS power).
 - WARP and the Telegram proxy are stopped (CT 113, CT 118).
-- ISP router's port forwards not documented.
+- ISP router has no port forwards.
 
 ## Handy checks
 

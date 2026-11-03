@@ -21,4 +21,3 @@ Host and backup details live in:
 - [proxmox/guest-inventory.md](../proxmox/guest-inventory.md)
 - [network/network-overview.md](../network/network-overview.md)
 - [operations/backups.md](../operations/backups.md)
-- [operations/risks-and-questions.md](../operations/risks-and-questions.md)

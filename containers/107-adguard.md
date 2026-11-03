@@ -158,7 +158,7 @@ Job runs every two hours (`0 */2 * * *`) and on startup. Syncs:
 - general settings, theme, query log/statistics settings
 - clients, blocked services, filters
 
-Doesn't copy query log history or statistics — the Pi keeps its own. TLS isn't an explicit feature, so the Pi's cert is checked separately when I document the Pi.
+Doesn't copy query log history or statistics — the Pi keeps its own. TLS isn't a synced feature, but verified 2026-11-03 the Pi serves a byte-identical copy of this cert (same serial/fingerprint) — so the Pi's `dns.prox.dpdns.org` cert is this one, copied over.
 
 Both ends addressed by IP over HTTPS, cert verification skipped. Origin `https://192.168.0.146`, replica `https://192.168.0.169`, both report `v0.107.79`. Sync service has a small web UI on 8080; metrics disabled.
 
@@ -168,7 +168,7 @@ Logs show a successful connection every even hour. Last before writing: 20:00 on
 
 AdGuard data lives inside the container root filesystem — no bind mounts to worry about. Weekly B2 job includes CT 107; archive from 2026-10-25 was 330 MB. Restoring brings back config, filters, query log, statistics together.
 
-An `agh-backup` dir in `/opt/AdGuardHome`, ~35 MB, holds an older binary and config from July/August. Didn't establish what creates it or whether anything uses it.
+An `agh-backup` dir in `/opt/AdGuardHome`, ~35 MB, holds an older binary and config from July/August. What creates or uses it wasn't established; treated as a leftover.
 
 The Pi isn't in the Proxmox backup job. Its AdGuard config is replicated, but its OS, SD card, and certificate aren't covered by the CT 107 archive.
 

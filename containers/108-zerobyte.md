@@ -48,7 +48,7 @@ Per the owner, Zerobyte handles the useful data:
 - the LXC backup files (the B2/scheduled container backups)
 - the Immich data — library and database
 
-So the photo library and DB are protected via Zerobyte, replacing the old Immich B2 scripts (see [109-immich.md](109-immich.md)). The repository storage is configured via `ZEROBYTE_REPOSITORIES_DIR` in the `.env` (value not reproduced).
+So the photo library and DB are protected via Zerobyte, replacing the old Immich B2 scripts (see [109-immich.md](109-immich.md)). The restic repositories target Backblaze B2 (owner-confirmed); the repository storage path is configured via `ZEROBYTE_REPOSITORIES_DIR` in the `.env` (value not reproduced).
 
 CT 108 itself is **not** in the B2 job — it is the backup service, not a client.
 

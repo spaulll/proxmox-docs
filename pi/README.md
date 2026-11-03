@@ -22,9 +22,9 @@ The Pi has run continuously since 2026-10-18 (13 days at capture). It's not just
 
 Sync from CT 107 (`adguardhome-sync`) keeps the config aligned. The Pi holds the `.147` VIP as `BACKUP` (priority 50) via `keepalived.service` (`PID 1168`). Config in `/etc/keepalived/keepalived.conf`: `VI_1` instance on `eth0`, `unicast_peer` `.146` (CT 107), `priority 50`. Auth passphrase (`auth_pass`) configured; value not copied.
 
-`dns-redirect.service` is active. Purpose not inspected; may redirect local queries. `extender-uptime.service` runs too; unclear from the name.
+`dns-redirect.service` is active — a small 302-redirect helper on port 8080. It points at whichever node currently holds the `192.168.0.147` VIP: CT 107's AdGuard admin (`192.168.0.146:80`) normally, or the Pi's local DNS admin (`192.168.0.169:5380`) when the VIP has moved to the Pi. So one URL always lands on the active DNS master. `extender-uptime.service` runs but serves no purpose — it's slated to be stopped permanently.
 
-TLS for `dns.prox.dpdns.org` is served for this name. The sync job doesn't sync TLS, and no `dns.prox.dpdns.org` cert file is visible in the inspected dir.
+TLS for `dns.prox.dpdns.org` is served for this name. The sync job doesn't sync TLS. Verified 2026-11-03: the cert this Pi serves is byte-identical to CT 107's (same serial `06536C409643555DA806133855E7D1302AF7`, same SHA-256 fingerprint) — Let's Encrypt, valid 2026-10-11 → 2027-01-09. The Pi holds a copy of CT 107's cert, so renewal happens there and lands here.
 
 ## UPS monitor (live)
 
@@ -57,7 +57,7 @@ Service not changed, no files edited. Live ESP32 (`.178`) reports `V7.6`; the se
 - Main PID is the daemon.
 - Log shows `derp.Recv` failures (`connect: network is unreachable` to `derp-6` at IPv6 `2400:6180`) — expected, no IPv6 default route.
 
-Running service. It offers exit-node capability but advertises no subnet routes.
+Running service. It's used as an exit node — the emergency fallback for when `prox` is down (the Pi stays up on UPS power). It offers exit-node capability and advertises no subnet routes.
 
 ## Network and interfaces
 
@@ -67,7 +67,7 @@ Running service. It offers exit-node capability but advertises no subnet routes.
 
 `/etc/hosts` maps `pi` to `127.0.1.1` — standard Debian.
 
-`dns-redirect.service` active (no details). `extender-uptime.service` active too. Exact roles not investigated.
+`dns-redirect.service` active (302 redirect to whichever node holds the DNS VIP; see the DNS section). `extender-uptime.service` active but serving no purpose; slated to be stopped.
 
 ## What else is installed
 
@@ -92,7 +92,7 @@ No firewall rules (`nft`, `ufw`) inside; the Pi relies on the network design (Op
 
 - `auth_pass` for `keepalived` (`/etc/keepalived/keepalived.conf`) configured; value not reproduced.
 - `AdGuardHome.yaml` has an admin account with `password_hash` and other settings; not copied.
-- `dns.prox.dpdns.org` TLS: served by the Pi or the host; no cert file visible in the inspected Pi dirs.
+- `dns.prox.dpdns.org` TLS: the served cert is a copy of CT 107's (verified identical serial/fingerprint); the Pi's cert derives from CT 107's renewal, not an independent issue.
 - `.env` from the UPS repo is missing; `ups-monitor.service` has the injected values embedded.
 - No SSH key auth (`ssh.service` allows password only; `id_ed25519.pub` exists on the host, not the Pi).
 - `PIPASS` is not stored in any file here after inspection; temp files containing it were removed.
@@ -111,8 +111,8 @@ No remote services started, stopped, or edited. All observations from `systemctl
 - `ups-monitor.service`: active (13 days, Python `/usr/local/bin/ups-monitor.py`)
 - `tailscaled.service`: active (`100.113.193.23`, connected)
 - `ntfy.service`: active (`/usr/local/bin/ntfy serve`)
-- `dns-redirect.service`: active
-- `extender-uptime.service`: active
+- `dns-redirect.service`: active (302 redirect to the active DNS master)
+- `extender-uptime.service`: active (no purpose; slated to be stopped)
 - `avahi-daemon.service`: active
 - `postfix.service`: not active
 - `cron.service`: active
@@ -124,5 +124,6 @@ No remote services started, stopped, or edited. All observations from `systemctl
 | Date | Change |
 |---|---|
 | 2026-10-31 | First version. Confirmed roles from CT 107 and repo; live inspection; `AdGuardHome` running; `keepalived` BACKUP; `ups-monitor` running; `tailscale` connected; `dns-redirect` and `extender-uptime` active. No secrets. |
+| 2026-11-03 | Owner review: `tailscaled` confirmed as exit node (power-cut fallback); `extender-uptime` has no purpose and will be stopped; Pi cert verified as a copy of CT 107's; Pi stays unbacked (accepted). Live check: `ups-monitor.service` running since 2026-10-18 (PID 1170); `dns-redirect.service` identified as a 302 redirect to the active DNS master. |
 
 

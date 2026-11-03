@@ -40,7 +40,7 @@ Both nodes run AdGuard Home `v0.107.79`. Details in [containers/107-adguard.md](
 
 ## Sync
 
-`adguardhome-sync` on CT 107 copies config to the Pi every two hours (`0 */2 * * *`) and at startup. It syncs DNS settings, rewrites, filters, clients, and stats settings — but **not** query log/statistics history, and **not** TLS. The Pi's cert is a separate open question.
+`adguardhome-sync` on CT 107 copies config to the Pi every two hours (`0 */2 * * *`) and at startup. It syncs DNS settings, rewrites, filters, clients, and stats settings — but **not** query log/statistics history, and **not** TLS. The two-hour interval is deliberate: it bounds how stale the standby can be. The Pi's `dns.prox.dpdns.org` cert is a byte-identical copy of CT 107's (verified 2026-11-03, same serial/fingerprint) — so it's renewed on CT 107 and copied over, since the sync doesn't carry TLS.
 
 ## OpenWrt dnsmasq
 
