@@ -153,6 +153,16 @@ Per-container pages: [containers/README.md](containers/README.md).
 | UPS | ESP32 sensor + Pi control plane, shutdown/wake path | [services/ups.md](services/ups.md) |
 | Backup & restore | B2 weekly script, Zerobyte, restore order | [services/backup-restore.md](services/backup-restore.md) |
 
+## Apps
+
+The three self-hosted apps, their repos, and where they run:
+
+| App | Repo | Runs on |
+|---|---|---|
+| Solar dashboard (Polycab) | [polycab-solar-dashboard](https://github.com/spaulll/polycab-solar-dashboard) | CT 119 (prod), CT 100 (test) |
+| Trading journal | [trading-journal](https://github.com/spaulll/trading-journal) | CT 102 |
+| AriaFlow download bot | [AriaFlow](https://github.com/spaulll/AriaFlow) | CT 103 |
+
 ---
 
 ## Raspberry Pi

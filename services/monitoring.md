@@ -16,6 +16,7 @@ This covers the "monitoring" container. Short version: there is no Prometheus/Gr
 - Runs on CT 119 (`solar-dashboard.service`, uvicorn on 8000, behind NPM via `--forwarded-allow-ips=10.10.10.200`). CT 119 is the canonical instance.
 - A `solar-dashboard` copy also runs in CT 100 (uvicorn on 8010) for testing; it is not the prod one.
 - Uses SQLite `solar_data.db`.
+- Repo: https://github.com/spaulll/polycab-solar-dashboard — Modbus TCP to the Polycab PSIS-3K6 inverter; WebSocket live stats, full-resolution SQLite history, CSV export, powercut tracking. No auth by design (home LAN only).
 
 ## Not present
 

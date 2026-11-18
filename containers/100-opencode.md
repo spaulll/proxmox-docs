@@ -24,7 +24,7 @@ This is the coding-agent host. It nests — that's why `nesting=1` and `keyctl=1
 |---|---|
 | `opencode serve --service` | the OpenCode agent service |
 | `browser-control-mcp` | browser control MCP bridge (node) |
-| `app.main:app` (uvicorn, :8010) | a small local web app (127.0.0.1) |
+| `app.main:app` (uvicorn, :8010) | test copy of the solar dashboard (loopback only; prod is CT 119) |
 | `postfix` | mail, localhost |
 | `sshd`, `cron` | SSH and scheduled work |
 

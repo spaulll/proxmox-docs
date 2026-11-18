@@ -34,6 +34,8 @@ The active service is `solar-dashboard.service`: a uvicorn app (`/root/solar-das
 
 It uses a SQLite DB `solar_data.db` and has a `frontend/` dir. Source in `/root/solar-dashboard` — `main.py`, `solar.py`, `inverter.py`, `config.py`, `database.py`.
 
+Repo: https://github.com/spaulll/polycab-solar-dashboard — talks Modbus TCP to the Polycab PSIS-3K6 inverter (register map in `inverter.py`, holding registers at 4097), pushes live readings over WebSocket, keeps full-resolution history in SQLite, and tracks powercuts. No auth — home-LAN only, by design.
+
 Ports:
 
 | Port | Process | Use |

@@ -1,6 +1,6 @@
 # CT 102, journal
 
-The trading journal web app. Backend (FastAPI) + frontend (SvelteKit), serving `journal.lan` / `journal.myownserv.duckdns.org`.
+The trading journal web app. Backend (FastAPI) + frontend (SvelteKit), serving `journal.lan` / `journal.myownserv.duckdns.org`. Repo: https://github.com/spaulll/trading-journal.
 
 ## Identity and resources
 
@@ -47,6 +47,14 @@ Ports:
 - `deploy.sh`, `run.sh` — deployment scripts
 
 The DB is SQLite, stored in the backend data dir — inside the container rootfs.
+
+## Notable features
+
+- **Telegram-first logging** — open, trail, and close trades with one-line messages and inline buttons. Photos sent to the bot attach to the open trade.
+- **Immich screenshots** — chart screenshots upload to Immich (CT 109), auto-organized into monthly `YYYY-MM Trades` albums with SHA dedupe. The Immich API key lives in `backend/.env`, server-side only.
+- **Prop-firm accounts** — challenge/funded/personal with daily-loss, max-loss, and profit-target limits; live room-left and breach status.
+- **Analytics** — equity curve, drawdown, R distribution, heatmap calendars, tag performance, streaks, session profiles.
+- **Guardrails** — stale-trade nudges, nightly EOD recap prompt, breach alerts.
 
 ## Unit files
 

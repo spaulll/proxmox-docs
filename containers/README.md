@@ -2,7 +2,7 @@
 
 Individual container notes. One at a time, starting with what everything else depends on.
 
-**Status:** CT 107, 106, 101, 105, 109, 104, 100, 102, 119, 108, 111, 110 are done. Stopped CTs 112, 113, 118 are skipped. No container has been modified or started.
+**Status:** CT 107, 106, 101, 105, 109, 104, 100, 102, 103, 119, 108, 111, 110 are done. Stopped CTs 112, 113, 118 are skipped. No container has been modified or started.
 
 ## Pages
 
@@ -16,6 +16,7 @@ Individual container notes. One at a time, starting with what everything else de
 | [104 jellyfin](104-jellyfin.md) | Media and GPU passthrough |
 | [100 opencode](100-opencode.md) | Development environment |
 | [102 journal](102-journal.md) | Journal application (SQLite) |
+| [103 aria2](103-aria2.md) | Downloader, AriaFlow Telegram bot |
 | [119 monitoring](119-monitoring.md) | Docker monitoring / solar dashboard |
 | [108 zerobyte](108-zerobyte.md) | Restic backups (Zerobyte) |
 | [111 filebrowser](111-filebrowser.md) | Web file browser |

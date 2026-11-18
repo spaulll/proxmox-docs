@@ -13,12 +13,18 @@ How the media library is stored and served. Movies, series, anime, and a YouTube
 | Service | Container | Port | Role |
 |---|---|---|---|
 | Jellyfin | 104 | 8096 | media server + transcoding |
-| aria2 | 103 | — | downloads (writes to lib) |
+| aria2 + AriaFlow | 103 | — | downloader + Telegram bot (organizes into lib) |
 | Samba/NFS | 105 | 445/2049 | LAN file access to the same data |
 | filebrowser | 111 | 8080 | web file management |
 
 - Jellyfin uses the Intel GPU (`/dev/dri/card1`, `renderD128`) with the `jellyfin` user in `video`/`render` groups for QSV transcoding (ffmpeg8). GPU transcoding is confirmed working, not falling back to CPU.
 - NPM exposes `jellyfin.myownserv.duckdns.org` → `10.10.10.201:8096`.
+
+## Downloads
+
+aria2 (CT 103) is driven by AriaFlow, a Telegram bot. Send it a link, a magnet, a video-page URL, or forward a file — it downloads via aria2 or yt-dlp, then organizes finished files into the library folders (`movies`, `series`, `anime`, `music`, `documents`, `Books`, `YouTube`). A local Telegram Bot API server allows forwarded files up to 2 GB. After organizing, it can trigger a Jellyfin library refresh.
+
+Repo: https://github.com/spaulll/AriaFlow. Container details: [../containers/103-aria2.md](../containers/103-aria2.md).
 
 ## Notes
 
